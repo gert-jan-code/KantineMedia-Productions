@@ -346,6 +346,7 @@ body.presenter-mode .pagehead h1{font-size:30px;}
   <div class="sidebar-foot">
     Ingelogd als<br><b id="sidebarUser" style="color:var(--white)"></b>
     <div id="sidebarRole" class="role-pill"></div>
+    <button class="btn secondary small" type="button" style="width:100%; margin-top:12px; justify-content:center;" onclick="logoutAdmin()">↪ Uitloggen</button>
   </div>
 </div>
 
@@ -1057,6 +1058,7 @@ if(!localStorage.getItem('km_seeded')){
     save('km_muziek', SPOTIFY_LIBRARY);
   }
 }
+if(!localStorage.getItem('km_seeded')){
   save('km_fax',[
     {id:uid(),cat:'Radio',q:'Hoe laat moet ik aanwezig zijn voor een uitzending?',a:'Minimaal 30 minuten voor aanvang van je uitzending, zodat er tijd is voor een geluidscheck en het doornemen van het draaiboek.', fav:true},
     {id:uid(),cat:'Presentatie',q:'Wat doe ik als een gast niet komt opdagen?',a:'Meld dit direct bij de eindredactie en vul het item met een extra muziekblok of achtergrondverhaal uit de FAX-categorie Radio.', fav:false},
@@ -1083,6 +1085,7 @@ if(!localStorage.getItem('km_seeded')){
     {programma:'Upcoming Talents', presentator:'Gert-Jan Wensink', datum:'2026-10-09', tijd:'19:00', status:'Nog niet gestart'},
   ]);
   save('km_seeded',true);
+}
 
 /* ---------- EENMALIGE UPDATE — ververst medewerkers/uitzendingen ook als de app al eerder open is geweest ---------- */
 if(!localStorage.getItem('km_seeded_v2')){
