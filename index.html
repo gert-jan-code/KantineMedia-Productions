@@ -307,6 +307,40 @@ body.presenter-mode .pagehead h1{font-size:30px;}
   #main{padding:70px 16px 50px;}
   .grid2{grid-template-columns:1fr;}
 }
+@media(max-width:600px){
+  #main{padding:64px 12px 32px; overflow-x:hidden;}
+  .pagehead{align-items:flex-start; margin-bottom:16px;}
+  .pagehead > div{min-width:0; flex:1;}
+  .pagehead h1{font-size:21px;}
+  .pagehead p{font-size:12.5px; line-height:1.45;}
+  .pagehead > .btn{width:100%; justify-content:center;}
+  .card{padding:15px 14px;}
+  .card h3{align-items:flex-start; gap:8px; flex-wrap:wrap;}
+  .stats-grid{grid-template-columns:1fr 1fr; gap:8px;}
+  .stat-card{padding:12px 10px;}
+  .stat-card .val{font-size:21px;}
+  .stat-card .lbl{font-size:11px;}
+  .list-row{align-items:flex-start; gap:8px; flex-wrap:wrap;}
+  .list-row > :last-child{margin-left:auto;}
+  .block{display:flex; flex-wrap:wrap; gap:8px; padding:10px;}
+  .block input,.block select{flex:1 1 calc(50% - 8px); width:calc(50% - 4px);}
+  .block .btnstack{width:100%; justify-content:flex-end; padding-top:2px;}
+  .dr-card .row{flex-wrap:wrap;}
+  .dr-card .row .btn{flex:1; justify-content:center;}
+  .track{flex-wrap:wrap; align-items:flex-start;}
+  .track-main{width:100%;}
+  .track-actions{width:100%; justify-content:stretch;}
+  .track-actions .btn{flex:1; justify-content:center;}
+  .music-search{margin:10px 0;}
+  .days{gap:10px;}
+  .artist-row{flex-wrap:wrap;}
+  .artist-row input{min-width:0;}
+  .artist-row .time{width:82px;}
+  .modal-bg{padding:12px;}
+  .modal{padding:18px; max-height:calc(100dvh - 24px);}
+  .guest-panel-head{align-items:flex-start; flex-wrap:wrap;}
+  .guest-panel-head .btn{width:100%; justify-content:center;}
+}
 </style>
 </head>
 <body>
@@ -820,9 +854,11 @@ function toggleLoginPassword(){
   }
 }
 function guestReadyForLive(){
-  const notification={id:uid(),artist:currentUser()||'Artiest',createdAt:new Date().toISOString()};
+  const guest=getGuestConfig();
+  const artist=guest.name||'Artiest';
+  const notification={id:uid(),artist,createdAt:new Date().toISOString()};
   save('km_guest_ready',notification);
-  toast('Gert-Jan is gemeld dat je klaar bent voor live');
+  toast(`${artist} is gemeld als klaar voor live`);
   if(currentUser()==='Gert-Jan') showGuestReadyModal(notification);
 }
 function showGuestReadyModal(notification){
