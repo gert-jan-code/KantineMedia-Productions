@@ -407,6 +407,7 @@ body.presenter-mode .pagehead h1{font-size:30px;}
     Ingelogd als<br><b id="sidebarUser" style="color:var(--white)"></b>
     <div id="sidebarRole" class="role-pill"></div>
     <button class="btn secondary small" type="button" style="width:100%; margin-top:12px; justify-content:center;" onclick="logoutAdmin()">↪ Uitloggen</button>
+    <button class="btn small" type="button" style="width:100%; margin-top:8px; justify-content:center;" onclick="saveAllChanges()">✓ Alles opslaan</button>
   </div>
 </div>
 
@@ -624,7 +625,10 @@ body.presenter-mode .pagehead h1{font-size:30px;}
   <section class="page" id="page-beheer">
     <div class="pagehead">
       <div><h1>Beheer</h1><p>Alle websitegegevens centraal en beveiligd aanpassen.</p></div>
-      <button class="btn danger small" onclick="logoutAdmin()">Uitloggen</button>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn" type="button" onclick="saveAllChanges()">✓ Alles opslaan</button>
+        <button class="btn danger small" type="button" onclick="logoutAdmin()">Uitloggen</button>
+      </div>
     </div>
     <div class="grid2">
       <div class="card">
@@ -2140,6 +2144,16 @@ function adminValue(value){
 }
 function saveGuestAdminData(){
   if(!requireAdmin())return;
+  saveAdminData();
+}
+function saveAllChanges(){
+  if(!requireAdmin())return;
+  const adminPage=document.getElementById('page-beheer');
+  if(!adminPage?.classList.contains('active')){
+    showPage('beheer');
+    toast('Open Beheer om wijzigingen te bewerken en op te slaan');
+    return;
+  }
   saveAdminData();
 }
 function renderAdminEmployees(){
