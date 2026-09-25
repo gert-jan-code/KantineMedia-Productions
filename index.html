@@ -201,6 +201,14 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 .track .info div{font-size:11.5px; color:var(--grey); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .track-actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
 .track .btn{white-space:nowrap;}
+.backingtrack-upload{display:flex; gap:10px; align-items:end; flex-wrap:wrap;}
+.backingtrack-upload .field{flex:1 1 280px; margin-bottom:0;}
+.backingtrack-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 0; border-bottom:1px solid var(--border);}
+.backingtrack-row:last-child{border-bottom:none;}
+.backingtrack-meta{min-width:0;}
+.backingtrack-meta strong{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.backingtrack-meta span{display:block; color:var(--grey); font-size:12px; margin-top:4px;}
+.backingtrack-actions{display:flex; gap:8px; flex-shrink:0;}
 
 /* FAX accordion */
 .fax-cats{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
@@ -492,6 +500,25 @@ body.presenter-mode .pagehead h1{font-size:30px;}
     </div>
   </section>
 
+  <!-- BACKINGTRACKS -->
+  <section class="page" id="page-backingtracks">
+    <div class="pagehead">
+      <div><h1>Backingtracks</h1><p>Upload backingtracks zodat ze vanaf ieder apparaat kunnen worden gedownload.</p></div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <h3>Nieuwe backingtrack</h3>
+      <div class="backingtrack-upload">
+        <div class="field"><label for="backingtrackFile">Audiobestand</label><input id="backingtrackFile" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac,.aac"></div>
+        <button class="btn" type="button" onclick="uploadBackingtrack()">⬆ Uploaden</button>
+      </div>
+      <p style="color:var(--grey); font-size:12px; margin-top:10px;">Maximaal 100 MB per bestand.</p>
+    </div>
+    <div class="card">
+      <div class="music-search"><input id="backingtrackSearch" placeholder="🔎 Zoek backingtrack..." oninput="renderBackingtracks()"></div>
+      <div id="backingtrackList"></div>
+    </div>
+  </section>
+
   <!-- LIVE INFO -->
   <section class="page" id="page-liveinfo">
     <div class="pagehead"><div><h1>Live info</h1><p>Actuele tijd, volgende segment en regionieuws voor de uitzending.</p></div><button id="presenterModeBtn" class="btn secondary small" type="button" onclick="togglePresenterMode()">⛶ Presentatiemodus</button></div>
@@ -626,6 +653,16 @@ body.presenter-mode .pagehead h1{font-size:30px;}
       <div id="adminGuestForm"></div>
     </div>
     <div class="card" style="margin-top:16px;">
+      <h3>👥 Medewerkers beheren</h3>
+      <div id="adminEmployeesForm"></div>
+      <button class="btn secondary small" type="button" style="margin-top:8px;" onclick="addAdminEmployee()">+ Medewerker toevoegen</button>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>🔑 Inlogaccounts beheren</h3>
+      <div id="adminAccountsForm"></div>
+      <button class="btn secondary small" type="button" style="margin-top:8px;" onclick="addAdminAccount()">+ Account toevoegen</button>
+    </div>
+    <div class="card" style="margin-top:16px;">
       <h3>📰 Nieuwsselectie live info</h3>
       <p style="color:var(--grey); font-size:12px; margin-bottom:12px;">Kies artikelen en sleep de geselecteerde regels in de gewenste volgorde.</p>
       <div id="adminNewsForm"></div>
@@ -756,6 +793,7 @@ body.presenter-mode .pagehead h1{font-size:30px;}
 
 /* ---------- helpers (niet aanpassen) ---------- */
 const SHARED_STATE_URL = location.protocol === 'http:' && !location.hostname.endsWith('github.io') ? '/api/state' : '';
+const BACKINGTRACKS_API_URL = location.protocol === 'http:' && !location.hostname.endsWith('github.io') ? '/api/backingtracks' : '';
 function toast(msg){const t=document.getElementById('toast'); t.innerHTML='✓ '+msg; t.classList.add('show'); clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),2200);}
 async function hydrateSharedState(){
   if (!SHARED_STATE_URL) return;
@@ -769,25 +807,29 @@ async function hydrateSharedState(){
     });
   } catch (error) {}
 }
-async function pushSharedState(){
-  if (!SHARED_STATE_URL) return;
-  try {
-    const snapshot = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (!key) continue;
-      try {
-        snapshot[key] = JSON.parse(localStorage.getItem(key));
-      } catch (error) {
-        snapshot[key] = localStorage.getItem(key);
+let sharedStateWriteQueue=Promise.resolve();
+function pushSharedState(){
+  if (!SHARED_STATE_URL) return Promise.resolve();
+  sharedStateWriteQueue=sharedStateWriteQueue.then(async()=>{
+    try {
+      const snapshot = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+        try {
+          snapshot[key] = JSON.parse(localStorage.getItem(key));
+        } catch (error) {
+          snapshot[key] = localStorage.getItem(key);
+        }
       }
-    }
-    await fetch(SHARED_STATE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(snapshot)
-    });
-  } catch (error) {}
+      await fetch(SHARED_STATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(snapshot)
+      });
+    } catch (error) {}
+  });
+  return sharedStateWriteQueue;
 }
 function load(key,fallback){try{const v=localStorage.getItem(key); return v?JSON.parse(v):fallback;}catch(e){return fallback;}}
 function save(key,val){
@@ -802,6 +844,7 @@ const NAV = [
   {id:'dashboard', ic:'🏠', label:'Dashboard'},
   {id:'draaiboeken', ic:'📋', label:'Draaiboeken'},
   {id:'muziek', ic:'🎵', label:'Muziek'},
+  {id:'backingtracks', ic:'🎚️', label:'Backingtracks'},
   {id:'gasten', ic:'✨', label:'Gasten'},
   {id:'liveinfo', ic:'🕘', label:'Live info'},
   {id:'agenda', ic:'🎤', label:'Weekend Agenda'},
@@ -819,11 +862,17 @@ NAV.forEach(n=>{
   d.onclick=()=>showPage(n.id);
   navList.appendChild(d);
 });
-const AUTH_USERS = {
+const DEFAULT_AUTH_USERS = {
   'Gert-Jan': { password: 'Wezep26#', role: 'Beheerder' },
   'Dick': { password: 'DG3nsenKM', role: 'Producer' },
   'Artiest': { password: '123', role: 'Artiest' }
 };
+function getAuthUsers(){
+  const saved=load('km_accounts',null);
+  if(saved && typeof saved==='object' && !Array.isArray(saved)) return saved;
+  save('km_accounts',DEFAULT_AUTH_USERS);
+  return {...DEFAULT_AUTH_USERS};
+}
 function isAdminLoggedIn(){return localStorage.getItem('km_loggedin')==='true';}
 function currentUser(){return localStorage.getItem('km_user')||'';}
 function currentUserRole(){return localStorage.getItem('km_role')||'Beheerder';}
@@ -891,7 +940,7 @@ async function checkGuestReadyNotification(){
 function submitLogin(){
   const username = (document.getElementById('loginUser') || {}).value || '';
   const password = (document.getElementById('loginPassword') || {}).value || '';
-  const user = AUTH_USERS[username];
+  const user = getAuthUsers()[username];
   const error = document.getElementById('loginError');
   if (user && user.password === password) {
     setLoggedInUser(username, user.role);
@@ -957,6 +1006,7 @@ function showPage(id){
   if(id==='dashboard') renderDashboard();
   if(id==='draaiboeken') renderDraaiboekenList();
   if(id==='muziek') renderLibTracks();
+  if(id==='backingtracks') renderBackingtracks();
   if(id==='gasten') renderGuestPage();
   if(id==='liveinfo') renderLiveInfoPage();
   if(id==='agenda') renderAgenda();
@@ -1530,6 +1580,78 @@ async function renderLibTracks(){
     </div>`).join('') || '<div class="empty">Geen resultaten.</div>';
 }
 
+function escapeBackingtrackText(value){
+  return String(value||'').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+function formatBackingtrackSize(bytes){
+  if(bytes<1024*1024) return `${Math.max(1,Math.round(bytes/1024))} KB`;
+  return `${(bytes/(1024*1024)).toFixed(1)} MB`;
+}
+function formatBackingtrackDate(value){
+  const date=new Date(value);
+  return Number.isNaN(date.getTime())?'':date.toLocaleDateString('nl-NL');
+}
+async function renderBackingtracks(){
+  const target=document.getElementById('backingtrackList');
+  if(!target)return;
+  if(!BACKINGTRACKS_API_URL){
+    target.innerHTML='<div class="empty">Backingtracks zijn beschikbaar wanneer de website via server.js of server.py draait.</div>';
+    return;
+  }
+  target.innerHTML='<div class="empty">Backingtracks laden...</div>';
+  try{
+    const response=await fetch(BACKINGTRACKS_API_URL,{cache:'no-store'});
+    const tracks=await response.json();
+    if(!response.ok) throw new Error(tracks.error||'Laden mislukt');
+    const query=(document.getElementById('backingtrackSearch')?.value||'').trim().toLowerCase();
+    const filtered=tracks.filter(track=>!query||track.name.toLowerCase().includes(query));
+    target.innerHTML=filtered.map(track=>`
+      <div class="backingtrack-row">
+        <div class="backingtrack-meta"><strong>${escapeBackingtrackText(track.name)}</strong><span>${formatBackingtrackSize(track.size)} · ${formatBackingtrackDate(track.uploadedAt)}</span></div>
+        <div class="backingtrack-actions"><a class="btn small" href="${BACKINGTRACKS_API_URL}/${encodeURIComponent(track.id)}" download>⬇ Download</a>${isAdminLoggedIn()?`<button class="btn danger small" type="button" onclick="deleteBackingtrack('${escapeBackingtrackText(track.id)}')">🗑 Verwijder</button>`:''}</div>
+      </div>`).join('')||'<div class="empty">Geen backingtracks gevonden.</div>';
+  }catch(error){
+    target.innerHTML=`<div class="empty">Backingtracks konden niet worden geladen: ${escapeBackingtrackText(error.message)}</div>`;
+  }
+}
+function bytesToBase64(bytes){
+  let binary='';
+  const chunkSize=0x8000;
+  for(let index=0;index<bytes.length;index+=chunkSize){
+    binary+=String.fromCharCode(...bytes.subarray(index,index+chunkSize));
+  }
+  return btoa(binary);
+}
+async function uploadBackingtrack(){
+  if(!requireAdmin())return;
+  const input=document.getElementById('backingtrackFile');
+  const file=input?.files?.[0];
+  if(!file){toast('Kies eerst een audiobestand'); return;}
+  if(file.size>100*1024*1024){toast('Het bestand mag maximaal 100 MB zijn'); return;}
+  if(!BACKINGTRACKS_API_URL){toast('De upload-API is niet beschikbaar'); return;}
+  const button=document.querySelector('#page-backingtracks .backingtrack-upload .btn');
+  if(button){button.disabled=true; button.textContent='Uploaden...';}
+  try{
+    const data=bytesToBase64(new Uint8Array(await file.arrayBuffer()));
+    const response=await fetch(BACKINGTRACKS_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:file.name,type:file.type,data})});
+    const result=await response.json();
+    if(!response.ok) throw new Error(result.error||'Upload mislukt');
+    input.value='';
+    toast('Backingtrack geüpload');
+    renderBackingtracks();
+  }catch(error){toast(error.message||'Upload mislukt');}
+  finally{if(button){button.disabled=false; button.textContent='⬆ Uploaden';}}
+}
+async function deleteBackingtrack(id){
+  if(!requireAdmin()||!confirm('Deze backingtrack verwijderen?'))return;
+  try{
+    const response=await fetch(`${BACKINGTRACKS_API_URL}/${encodeURIComponent(id)}`,{method:'DELETE'});
+    if(!response.ok) throw new Error('Verwijderen mislukt');
+    renderBackingtracks();
+    toast('Backingtrack verwijderd');
+  }catch(error){toast(error.message||'Verwijderen mislukt');}
+}
+
 /* ---------- LIVE INFO PAGE ---------- */
 let newsRefreshTimer=null;
 let liveUndoStack=[];
@@ -2006,9 +2128,66 @@ function renderAdminPage(){
     </div>
     <div class="field"><label>Gesprekstarters, één per regel</label><textarea id="adminGuestPrompts" rows="4">${guest.prompts.join('\n')}</textarea></div>
     <div class="field"><label>Titel praktische informatie</label><input id="adminGuestPracticalTitle" value="${String(guest.practicalTitle||'').replace(/"/g,'&quot;')}"></div>
-    <div class="field"><label>Praktische blokken, één per regel in formaat: titel | regel 1 | regel 2</label><textarea id="adminGuestPractical" rows="4">${guest.practical.map(item=>`${item.title} | ${item.lines.join(' | ')}`).join('\n')}</textarea></div>`;
+    <div class="field"><label>Praktische blokken, één per regel in formaat: titel | regel 1 | regel 2</label><textarea id="adminGuestPractical" rows="4">${guest.practical.map(item=>`${item.title} | ${item.lines.join(' | ')}`).join('\n')}</textarea></div>
+    <button class="btn secondary small" type="button" onclick="saveGuestAdminData()">✓ Gasteninformatie opslaan</button>`;
+  renderAdminEmployees();
+  renderAdminAccounts();
   renderAdminNewsEditor();
 
+}
+function adminValue(value){
+  return String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function saveGuestAdminData(){
+  if(!requireAdmin())return;
+  saveAdminData();
+}
+function renderAdminEmployees(){
+  const target=document.getElementById('adminEmployeesForm');
+  if(!target)return;
+  const employees=load('km_employees',[]);
+  target.innerHTML=employees.map(employee=>`
+    <div data-admin-employee-row style="padding:12px; margin-bottom:10px; background:var(--panel2); border:1px solid var(--border); border-radius:8px;">
+      <div class="field-grid">
+        <div class="field"><label>Naam</label><input data-employee-field="naam" value="${adminValue(employee.naam)}"></div>
+        <div class="field"><label>Functie</label><input data-employee-field="functie" value="${adminValue(employee.functie)}"></div>
+        <div class="field"><label>Programma</label><input data-employee-field="programma" value="${adminValue(employee.programma)}"></div>
+        <div class="field"><label>Contact</label><input data-employee-field="contact" value="${adminValue(employee.contact)}"></div>
+        <div class="field"><label>Status</label><select data-employee-field="status"><option ${employee.status==='Actief'?'selected':''}>Actief</option><option ${employee.status==='Afwezig'?'selected':''}>Afwezig</option></select></div>
+      </div>
+      <button class="btn danger small" type="button" onclick="this.closest('[data-admin-employee-row]').remove()">🗑 Verwijder medewerker</button>
+    </div>`).join('') || '<div class="empty">Nog geen medewerkers toegevoegd.</div>';
+}
+function addAdminEmployee(){
+  if(!requireAdmin())return;
+  const employees=load('km_employees',[]);
+  employees.push({naam:'Nieuwe medewerker',functie:'',programma:'',contact:'',status:'Actief'});
+  save('km_employees',employees);
+  renderAdminEmployees();
+}
+function renderAdminAccounts(){
+  const target=document.getElementById('adminAccountsForm');
+  if(!target)return;
+  const accounts=getAuthUsers();
+  target.innerHTML=Object.entries(accounts).map(([username,account])=>`
+    <div data-admin-account-row data-account-original="${adminValue(username)}" style="padding:12px; margin-bottom:10px; background:var(--panel2); border:1px solid var(--border); border-radius:8px;">
+      <div class="field-grid">
+        <div class="field"><label>Gebruikersnaam</label><input data-account-field="username" value="${adminValue(username)}"></div>
+        <div class="field"><label>Wachtwoord</label><input data-account-field="password" type="text" value="${adminValue(account.password)}"></div>
+        <div class="field"><label>Rol</label><select data-account-field="role"><option ${account.role==='Medewerker'?'selected':''}>Medewerker</option><option ${account.role==='Redacteur'?'selected':''}>Redacteur</option><option ${account.role==='Producer'?'selected':''}>Producer</option><option ${account.role==='Beheerder'?'selected':''}>Beheerder</option><option ${account.role==='Artiest'?'selected':''}>Artiest</option></select></div>
+      </div>
+      <button class="btn danger small" type="button" onclick="this.closest('[data-admin-account-row]').remove()">🗑 Verwijder account</button>
+    </div>`).join('') || '<div class="empty">Nog geen accounts toegevoegd.</div>';
+}
+function addAdminAccount(){
+  if(!requireAdmin())return;
+  const accounts=getAuthUsers();
+  let username='Nieuwe gebruiker';
+  let number=2;
+  while(accounts[username]) username=`Nieuwe gebruiker ${number++}`;
+  accounts[username]={password:'',role:'Medewerker'};
+  save('km_accounts',accounts);
+  renderAdminAccounts();
 }
 function saveAdminData(){
   if(!requireAdmin()) return;
@@ -2059,6 +2238,28 @@ function saveAdminData(){
   };
   save('km_guest', guestConfig);
 
+  const employees=[...document.querySelectorAll('#adminEmployeesForm [data-admin-employee-row]')].map(row=>({
+    naam:row.querySelector('[data-employee-field="naam"]').value.trim(),
+    functie:row.querySelector('[data-employee-field="functie"]').value.trim(),
+    programma:row.querySelector('[data-employee-field="programma"]').value.trim(),
+    contact:row.querySelector('[data-employee-field="contact"]').value.trim(),
+    status:row.querySelector('[data-employee-field="status"]').value
+  })).filter(employee=>employee.naam);
+  save('km_employees',employees);
+
+  const accounts={};
+  document.querySelectorAll('#adminAccountsForm [data-admin-account-row]').forEach(row=>{
+    const username=row.querySelector('[data-account-field="username"]').value.trim();
+    const password=row.querySelector('[data-account-field="password"]').value;
+    const role=row.querySelector('[data-account-field="role"]').value;
+    if(username && password) accounts[username]={password,role};
+  });
+  if(!Object.keys(accounts).length){
+    toast('Behoud minimaal één account met wachtwoord');
+    return;
+  }
+  save('km_accounts',accounts);
+
   const selectedNews=[];
   document.querySelectorAll('#adminNewsForm [data-news-id]').forEach(row=>{
     if(row.querySelector('input[type="checkbox"]')?.checked) selectedNews.push(row.dataset.newsId);
@@ -2070,6 +2271,7 @@ function saveAdminData(){
   renderDashboard();
   renderInfo();
   renderGuestPage();
+  renderEmployees();
   toast('Alle bewerkingsinstellingen opgeslagen');
 }
 
@@ -2107,7 +2309,8 @@ function getGuestConfig(){
     practicalTitle: 'Praktisch in de studio',
     practical: [{title:'Waar',lines:['Studio KantineMedia','Hoofdingang, tweede verdieping']}, {title:'Contact',lines:['Presentator: achter de microfoon','Productie: via de regie']}, {title:'On air',lines:['Wacht op het rode lampje','Praat dicht bij de microfoon']}]
   };
-  const saved = SHARED_STATE_URL || location.protocol === 'file:' ? load('km_guest', null) : null;
+  const shouldLoadGuest=Boolean(SHARED_STATE_URL) || location.protocol === 'file:';
+  const saved = shouldLoadGuest ? load('km_guest', null) : null;
   if (saved && typeof saved === 'object') {
     return {...defaultGuest, ...saved};
   }
