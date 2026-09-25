@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="KantineMedia Production: radioproductie, uitzendingen, draaiboeken en informatie voor de studio.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="KantineMedia Production">
+<meta property="og:description" content="Radioproductie, uitzendingen, draaiboeken en studio-informatie van KantineMedia.">
+<meta name="twitter:card" content="summary">
+<title>KantineMedia Production | Radioproductie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D1117; --panel:#161B22; --panel2:#1C2330; --green:#19C463; --green2:#35E07A;
+  --white:#FFFFFF; --grey:#8B949E; --border:#242C3A; --red:#F85149; --amber:#E3B341; --blue:#58A6FF;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%;}
+body{
+  font-family:'Inter',sans-serif; background:var(--bg); color:var(--white);
+  height:100%; display:flex; overflow:hidden;
+}
+::-webkit-scrollbar{width:8px; height:8px;} ::-webkit-scrollbar-thumb{background:#2a3341; border-radius:4px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* Sidebar */
+#sidebar{
+  width:240px; min-width:240px; background:var(--panel); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; padding:20px 14px; height:100%; overflow-y:auto;
+  transition:transform .2s ease; z-index:50;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:6px 8px 22px 8px;}
+.brand-mark{width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,var(--green),var(--green2)); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:#04140a; flex-shrink:0;}
+.brand-text .l1{font-weight:800; font-size:14.5px; line-height:1.15;}
+.brand-text .l2{font-weight:600; font-size:11.5px; color:var(--green2); letter-spacing:.03em;}
+nav{display:flex; flex-direction:column; gap:2px; flex:1;}
+.navlink{
+  display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:8px; color:var(--grey);
+  font-size:14px; font-weight:500; cursor:pointer; border:1px solid transparent; user-select:none;
+}
+.navlink:hover{background:#1c232f; color:var(--white);}
+.navlink.active{background:rgba(25,196,99,.12); color:var(--green2); border-color:rgba(25,196,99,.25);}
+.navlink .ic{font-size:16px; width:18px; text-align:center;}
+.navlink.admin-link{opacity:.42; font-size:12.5px; margin-top:8px; border-style:dashed;}
+.sidebar-foot{border-top:1px solid var(--border); padding-top:12px; margin-top:8px; font-size:11.5px; color:var(--grey);}
+.role-pill{display:inline-block; margin-top:6px; background:#1c232f; color:var(--green2); font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;}
+
+#menuBtn{display:none; position:fixed; top:calc(env(safe-area-inset-top,0px) + 14px); left:14px; z-index:60; background:var(--panel); border:1px solid var(--border); color:var(--white); width:38px; height:38px; border-radius:8px; font-size:16px; cursor:pointer;}
+
+/* Main */
+#main{flex:1; height:100%; overflow-y:auto; padding:28px 34px 60px;}
+.page{display:none;}
+.page.active{display:block;}
+.pagehead{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:22px; flex-wrap:wrap; gap:12px;}
+.pagehead h1{font-size:23px; font-weight:800;}
+.pagehead p{color:var(--grey); font-size:13.5px; margin-top:3px;}
+.btn{background:var(--green); color:#04140a; border:none; padding:9px 16px; border-radius:8px; font-weight:700; font-size:13.5px; cursor:pointer; display:inline-flex; align-items:center; gap:7px;}
+.btn:hover{background:var(--green2);}
+.btn.secondary{background:var(--panel2); color:var(--white); border:1px solid var(--border);}
+.btn.secondary:hover{border-color:var(--green);}
+.btn.danger{background:transparent; color:var(--red); border:1px solid rgba(248,81,73,.35);}
+.btn.small{padding:6px 11px; font-size:12.5px;}
+
+/* Stat cards */
+.stats-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:22px;}
+.stat-card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px 18px;}
+.stat-card .lbl{color:var(--grey); font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:6px;}
+.stat-card .val{font-size:25px; font-weight:800; margin-top:8px;}
+.stat-card .delta{font-size:12px; font-weight:600; color:var(--green2); margin-top:4px;}
+.delta.neg{color:var(--red);}
+
+.grid2{display:grid; grid-template-columns:1.4fr 1fr; gap:16px; margin-bottom:16px;}
+@media(max-width:900px){.grid2{grid-template-columns:1fr;}}
+.card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px 20px;}
+.card h3{font-size:14.5px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;}
+.card h3 span.sub{color:var(--grey); font-weight:500; font-size:11.5px;}
+
+/* Bar chart (css) */
+.bars{display:flex; align-items:flex-end; gap:8px; height:150px; padding-top:6px;}
+.bar-col{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end;}
+.bar{width:100%; border-radius:5px 5px 0 0; background:linear-gradient(180deg,var(--green2),var(--green));}
+.bar-col .bl{font-size:10.5px; color:var(--grey);}
+
+.list-row{display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px;}
+.list-row:last-child{border-bottom:none;}
+.list-row .t1{font-weight:600;}
+.list-row .t2{color:var(--grey); font-size:12px;}
+.badge{font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px;}
+.badge.green{background:rgba(25,196,99,.15); color:var(--green2);}
+.badge.amber{background:rgba(227,179,65,.15); color:var(--amber);}
+.badge.red{background:rgba(248,81,73,.15); color:var(--red);}
+.badge.grey{background:#232b38; color:var(--grey);}
+
+/* Draaiboeken */
+.dr-toolbar{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
+.dr-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px;}
+.dr-card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px; cursor:pointer;}
+.dr-card:hover{border-color:var(--green);}
+.dr-card h4{font-size:14.5px; font-weight:700;}
+.dr-card p{color:var(--grey); font-size:12px; margin-top:4px;}
+.dr-card .row{display:flex; gap:8px; margin-top:12px;}
+
+input,select,textarea{
+  background:#0f151d; border:1px solid var(--border); color:var(--white); border-radius:8px;
+  padding:9px 11px; font-size:13.5px; font-family:inherit; width:100%;
+}
+input:focus,select:focus,textarea:focus{outline:none; border-color:var(--green);}
+label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; display:block;}
+.field{margin-bottom:14px;}
+.field-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px;}
+
+.timeline{display:flex; flex-direction:column; gap:8px; margin-top:16px;}
+.block{
+  display:grid; grid-template-columns:124px 110px 1fr 1fr 110px auto; gap:10px; align-items:center;
+  background:var(--panel2); border:1px solid var(--border); border-left:4px solid var(--type-color,var(--green));
+  border-radius:8px; padding:10px 12px;
+}
+@media(max-width:900px){.block{grid-template-columns:1fr 1fr; grid-template-areas:"time type" "content content" "music note" "actions actions";}}
+.block input, .block select{padding:8px 9px; font-size:13px; min-width:0;}
+.block .block-time{font-variant-numeric:tabular-nums; letter-spacing:.03em;}
+.block .btnstack{display:flex; gap:4px;}
+.icobtn{background:transparent; border:1px solid var(--border); color:var(--grey); width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:12px;}
+.icobtn:hover{border-color:var(--green); color:var(--green2);}
+
+/* Music search */
+.music-search{display:flex; gap:10px; margin:16px 0;}
+.track-list{display:flex; flex-direction:column; gap:12px; max-height:360px; overflow-y:auto;}
+.track{display:flex; justify-content:space-between; align-items:center; gap:12px; background:linear-gradient(180deg, rgba(28,35,48,.94), rgba(15,21,29,.94)); border:1px solid var(--border); border-radius:12px; padding:10px 12px;}
+.track-main{display:flex; align-items:center; gap:12px; flex:1; min-width:0;}
+.track-cover{width:54px; height:54px; object-fit:cover; border-radius:10px; border:1px solid rgba(255,255,255,.08); background:#111827; flex-shrink:0;}
+.track .info{min-width:0; flex:1;}
+.track .info b{font-size:13.5px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} 
+.track .info div{font-size:11.5px; color:var(--grey); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.track-actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+.mini-player{width:150px; height:28px;}
+.mini-player audio{width:100%;}
+.track .btn{white-space:nowrap;}
+
+/* FAX accordion */
+.fax-cats{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+.fax-cat{background:var(--panel2); border:1px solid var(--border); padding:7px 13px; border-radius:20px; font-size:12.5px; cursor:pointer; color:var(--grey);}
+.fax-cat.active{background:rgba(25,196,99,.15); color:var(--green2); border-color:rgba(25,196,99,.3);}
+.acc-item{border:1px solid var(--border); border-radius:10px; margin-bottom:8px; overflow:hidden; background:var(--panel);}
+.acc-q{padding:13px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:600; font-size:13.5px;}
+.acc-a{max-height:0; overflow:hidden; transition:max-height .18s ease;}
+.acc-a-in{padding:0 16px 14px; color:var(--grey); font-size:13px; line-height:1.55;}
+.acc-item.open .acc-a{max-height:300px;}
+
+/* Info */
+.info-tabs{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+.info-tab{padding:8px 14px; border-radius:8px; background:var(--panel2); border:1px solid var(--border); font-size:13px; cursor:pointer; color:var(--grey);}
+.info-tab.active{background:rgba(25,196,99,.12); color:var(--green2); border-color:rgba(25,196,99,.3);}
+
+/* Medewerkers */
+.emp-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px;}
+.emp-card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px; text-align:center;}
+.emp-ava{width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--green2)); display:flex; align-items:center; justify-content:center; font-weight:800; color:#04140a; margin:0 auto 10px; font-size:18px;}
+.emp-card h4{font-size:14.5px;} .emp-card .role{color:var(--green2); font-size:12px; margin-top:2px;}
+.emp-card .prog{color:var(--grey); font-size:11.5px; margin-top:6px;}
+
+/* Weekend Agenda */
+.days{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media(max-width:700px){.days{grid-template-columns:1fr;}}
+.day-card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px;}
+.day-card h2{font-size:15px; font-weight:700; margin-bottom:14px;}
+.artist-list{display:flex; flex-direction:column; gap:8px; margin-bottom:12px;}
+.artist-row{display:flex; gap:8px; align-items:center;}
+.artist-row input{flex:1;}
+.artist-row .time{width:90px; flex:none;}
+.add-btn{width:100%; background:var(--panel2); border:1px dashed var(--border); color:var(--grey); padding:9px; border-radius:8px; font-size:13px; cursor:pointer; font-weight:600;}
+.add-btn:hover{border-color:var(--green); color:var(--green2);}
+
+/* Guest welcome */
+.guest-shell{display:grid; grid-template-columns:1.2fr .8fr; gap:18px; align-items:stretch;}
+.guest-hero{background:linear-gradient(135deg, rgba(25,196,99,.18), rgba(88,166,255,.10)); border:1px solid var(--border); border-radius:18px; padding:26px; min-height:280px; display:flex; flex-direction:column; justify-content:center; position:relative; overflow:hidden;}
+.guest-hero::before{content:""; position:absolute; inset:auto -30px -60px auto; width:170px; height:170px; background:radial-gradient(circle, rgba(53,224,122,.65), transparent 60%);}
+.guest-kicker{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:999px; width:fit-content; color:var(--green2);}
+.guest-name{font-size:clamp(32px,5vw,56px); font-weight:800; line-height:1; margin-top:16px; letter-spacing:-.04em;}
+.guest-sub{margin-top:14px; color:var(--grey); font-size:15px; max-width:620px; line-height:1.6;}
+.guest-badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+.guest-badge{display:inline-flex; align-items:center; gap:8px; background:rgba(17,21,29,.7); border:1px solid var(--border); padding:8px 12px; border-radius:999px; font-size:12px; color:var(--white);}
+.guest-card{background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:20px; display:flex; flex-direction:column; justify-content:center;}
+.guest-photo{width:100%; max-width:260px; aspect-ratio:1; border-radius:18px; object-fit:cover; margin:0 auto 14px; border:1px solid var(--border); background:linear-gradient(135deg,#1c2330,#101720);}
+.guest-meta{display:flex; flex-direction:column; gap:10px; font-size:13px; color:var(--grey);}
+.guest-meta b{color:var(--white);}
+.guest-schedule{margin-top:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px;}
+.guest-slot{background:rgba(15,21,29,.8); border:1px solid var(--border); border-radius:10px; padding:10px 12px;}
+.guest-slot strong{display:block; font-size:13px; margin-bottom:4px;}
+.guest-slot span{color:var(--grey); font-size:12px;}
+.guest-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:24px;}
+.guest-lower{display:grid; grid-template-columns:1.1fr .9fr; gap:16px; margin-top:16px;}
+.guest-panel{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px 20px;}
+.guest-panel h2{font-size:15px; margin-bottom:14px;}
+.guest-panel-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px;}
+.guest-panel-head h2{margin-bottom:0;}
+.guest-progress{height:6px; background:var(--panel2); border-radius:6px; overflow:hidden; margin:8px 0 14px;}
+.guest-progress span{display:block; height:100%; width:0; background:var(--green2); transition:width .2s ease;}
+.guest-check{display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); color:var(--grey); font-size:13px; cursor:pointer;}
+.guest-check:last-child{border-bottom:0;}
+.guest-check input{width:auto; margin-top:2px; accent-color:var(--green);}
+.guest-check:has(input:checked){color:var(--white);}
+.prompt-card{background:linear-gradient(135deg,rgba(88,166,255,.12),rgba(25,196,99,.08)); border:1px solid rgba(88,166,255,.24); border-radius:10px; padding:16px; min-height:112px; display:flex; flex-direction:column; justify-content:space-between;}
+.prompt-label{color:var(--blue); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;}
+.prompt-text{font-size:15px; line-height:1.45; margin-top:12px;}
+.guest-facts{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px;}
+.guest-fact{background:var(--panel2); border-radius:8px; padding:12px;}
+.guest-fact strong{display:block; font-size:18px; color:var(--green2); margin-bottom:4px;}
+.guest-fact span{color:var(--grey); font-size:11px; line-height:1.35;}
+@media(max-width:900px){.guest-shell,.guest-lower{grid-template-columns:1fr;}}
+@media(max-width:520px){.guest-actions .btn{width:100%; justify-content:center;}.guest-facts{grid-template-columns:1fr;}}
+
+/* Toast */
+#toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--panel); border:1px solid var(--green); color:var(--white); padding:11px 20px; border-radius:9px; font-size:13.5px; font-weight:600; opacity:0; transition:all .25s ease; z-index:200; display:flex; align-items:center; gap:8px;}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+/* Modal */
+.modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:150; padding:20px;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:24px; width:100%; max-width:460px; max-height:85vh; overflow-y:auto;}
+.modal h3{margin-bottom:16px;}
+.password-field{position:relative;}
+.password-field input{padding-right:40px;}
+
+.tag-select{display:flex; gap:6px; flex-wrap:wrap;}
+.tag-opt{padding:6px 12px; border-radius:20px; border:1px solid var(--border); background:var(--panel2); font-size:12px; cursor:pointer; color:var(--grey);}
+.tag-opt.sel{background:var(--tagcolor,var(--green)); color:#04140a; border-color:transparent; font-weight:700;}
+
+.status-tabs{display:flex; gap:8px; margin-bottom:16px;}
+.status-tab{padding:8px 16px; border-radius:8px; background:var(--panel2); border:1px solid var(--border); cursor:pointer; font-size:13px; color:var(--grey);}
+.status-tab.active{background:rgba(25,196,99,.12); border-color:rgba(25,196,99,.3); color:var(--green2);}
+
+.empty{color:var(--grey); font-size:13px; padding:30px 10px; text-align:center;}
+
+@media(max-width:880px){
+  #sidebar{position:fixed; top:0; left:0; bottom:0; transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #menuBtn{display:block;}
+  #main{padding:70px 16px 50px;}
+  .grid2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<button id="menuBtn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<div id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">KM</div>
+    <div class="brand-text"><div class="l1">KantineMedia</div><div class="l2">PRODUCTION</div></div>
+  </div>
+  <nav id="navList"></nav>
+  <div class="sidebar-foot">
+    Ingelogd als<br><b style="color:var(--white)">Gert-Jan Wensink</b>
+    <div class="role-pill">Beheerder</div>
+  </div>
+</div>
+
+<div id="main">
+
+  <!-- DASHBOARD -->
+  <section class="page active" id="page-dashboard">
+    <div class="pagehead">
+      <div>
+        <h1 id="dashboardGreeting">Goedemorgen, Gert-Jan 👋</h1>
+        <div id="dashboardClock" style="margin-top:6px; color:var(--grey); font-size:13px; font-weight:600; letter-spacing:.06em;"></div>
+      </div>
+    </div>
+    <div class="stats-grid" id="dashStats"></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>📈 Bereik per week <span class="sub">laatste 6 weken</span></h3>
+        <div class="bars" id="bereikChart"></div>
+      </div>
+      <div class="card">
+        <h3>🎙️ Komende uitzendingen</h3>
+        <div id="komendeList"></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>📋 Recente draaiboeken</h3>
+        <div id="recenteDraaiboeken"></div>
+      </div>
+      <div class="card">
+        <h3>📢 Belangrijke informatie</h3>
+        <div id="meldingen"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRAAIBOEKEN -->
+  <section class="page" id="page-draaiboeken">
+    <div class="pagehead">
+      <div><h1>Draaiboeken</h1><p>Bereid uitzendingen voor, bewaar en beheer ze.</p></div>
+      <button class="btn" onclick="newDraaiboek()">+ Nieuwe uitzending</button>
+    </div>
+    <div class="dr-list" id="draaiboekenList"></div>
+  </section>
+
+  <!-- DRAAIBOEK EDITOR -->
+  <section class="page" id="page-editor">
+    <div class="pagehead">
+      <div><h1 id="editorTitle">Nieuwe uitzending</h1><p>Stel het draaiboek samen, blok voor blok.</p></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn secondary" onclick="showPage('draaiboeken')">← Terug</button>
+        <button class="btn secondary" onclick="duplicateCurrent()">⧉ Dupliceer</button>
+        <button class="btn secondary" onclick="window.print()">🖨 Print/Export</button>
+        <button class="btn" onclick="saveDraaiboek()">✓ Opslaan</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="field-grid">
+        <div class="field"><label>Programma</label><input id="f-programma" placeholder="bv. Ochtendshow"></div>
+        <div class="field"><label>Presentator</label><input id="f-presentator" placeholder="bv. Gert-Jan Wensink"></div>
+        <div class="field"><label>Datum</label><input id="f-datum" type="date"></div>
+        <div class="field"><label>Starttijd</label><input id="f-start" type="time" value="17:00"></div>
+        <div class="field"><label>Eindtijd</label><input id="f-eind" type="time" value="18:00"></div>
+        <div class="field"><label>Thema</label><input id="f-thema" placeholder="bv. Lokale muziek"></div>
+        <div class="field"><label>Gast</label><input id="f-gast" placeholder="bv. -"></div>
+      </div>
+      <div class="field"><label>Opmerkingen</label><textarea id="f-opm" rows="2" placeholder="Algemene opmerkingen..."></textarea></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3>🎵 Muziek zoeken <span class="sub">voorbeelddata — klaar voor koppeling met een muziek-API</span></h3>
+      <div class="music-search">
+        <input id="musicQuery" placeholder="🔎 Zoek artiest, titel of album..." oninput="renderTracks()">
+      </div>
+      <div class="track-list" id="trackList"></div>
+    </div>
+
+    <div class="card">
+      <h3>Tijdlijn <span class="sub" id="blockCount"></span></h3>
+      <div class="timeline" id="timeline"></div>
+      <button class="btn secondary small" style="margin-top:14px;" onclick="addBlock()">+ Blok toevoegen</button>
+    </div>
+  </section>
+
+  <!-- MUZIEK -->
+  <section class="page" id="page-muziek">
+    <div class="pagehead"><div><h1>Muziek</h1><p>Doorzoek de muziekbibliotheek van KantineMedia.</p></div></div>
+    <div class="card">
+      <div class="music-search"><input id="musicQueryLib" placeholder="🔎 Zoek artiest, titel of album..." oninput="renderLibTracks()"></div>
+      <div class="track-list" id="libTrackList"></div>
+    </div>
+  </section>
+
+  <!-- LIVE INFO -->
+  <section class="page" id="page-liveinfo">
+    <div class="pagehead"><div><h1>Live info</h1><p>Actuele tijd, volgende segment en regionieuws voor de uitzending.</p></div></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>🕒 Huidige tijd</h3>
+        <div id="liveTimeDisplay" style="font-size:42px; font-weight:800; letter-spacing:.06em; margin-top:10px; color:var(--white);"></div>
+        <div id="liveHourCountdown" style="margin-top:10px; color:var(--green2); font-size:14px;"></div>
+      </div>
+      <div class="card">
+        <h3>📡 Volgende gedeelte</h3>
+        <div id="liveNextBlock" style="margin-top:10px;"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>📰 Regionieuws</h3>
+      <div id="liveNewsFeed" style="margin-top:10px;"></div>
+      <div id="liveNewsManager" style="margin-top:14px;"></div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>🌦️ Weer in Oldebroek <a href="https://www.weeronline.nl/weerbericht-nederland" target="_blank" rel="noopener" style="font-size:12px; color:var(--green2);">Weeronline openen ↗</a></h3>
+      <div id="liveWeather" style="margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <!-- WEEKEND AGENDA -->
+  <section class="page" id="page-agenda">
+    <div class="pagehead">
+      <div><h1>Weekend Agenda</h1><p>Vul de artiesten in voor vrijdag en zaterdag.</p></div>
+    </div>
+    <div class="days" id="agendaDays"></div>
+  </section>
+
+  <!-- FAX -->
+  <section class="page" id="page-fax">
+    <div class="pagehead">
+      <div><h1>FAX</h1><p>Interne informatie- en FAQ-database.</p></div>
+    </div>
+    <input id="faxSearch" placeholder="🔎 Zoek in FAX..." oninput="renderFax()" style="margin-bottom:14px;">
+    <div class="fax-cats" id="faxCats"></div>
+    <div id="faxAccordion"></div>
+  </section>
+
+  <!-- INFORMATIE -->
+  <section class="page" id="page-informatie">
+    <div class="pagehead"><div><h1>Informatie</h1><p>Centrale informatie voor medewerkers.</p></div></div>
+    <input id="infoSearch" placeholder="🔎 Zoek in de informatie..." oninput="renderInfo()" style="margin-bottom:14px;">
+    <div class="info-tabs" id="infoTabs"></div>
+    <div class="card" id="infoContent"></div>
+  </section>
+
+  <!-- MEDEWERKERS -->
+  <!-- GASTEN -->
+  <section class="page" id="page-gasten">
+    <div class="pagehead"><div><h1 id="guestPageTitle">Gast welkom</h1></div></div>
+    <div class="guest-shell">
+      <div class="guest-hero">
+        <div class="guest-kicker" id="guestKicker">Vandaag in de studio</div>
+        <div class="guest-name" id="guestName">Ariane de Vries</div>
+        <div class="guest-sub" id="guestMessage">Welkom bij KantineMedia! We zijn blij dat je hier bent en kijken uit naar een mooie, energieke uitzending samen.</div>
+        <div class="guest-badges" id="guestBadges"></div>
+        <div class="guest-actions">
+          <button class="btn" onclick="document.getElementById('guestPrep').scrollIntoView({behavior:'smooth'})">✨ Bereid je voor</button>
+          <button class="btn secondary" onclick="toast('Veel plezier in de studio!')">🎙️ Klaar voor live</button>
+        </div>
+        <div class="guest-schedule" id="guestSchedule"></div>
+      </div>
+      <div class="guest-card">
+        <img class="guest-photo" id="guestPhoto" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80" alt="Gastfoto">
+        <div class="guest-meta">
+          <div><b>Naam</b><br><span id="guestMetaName">Ariane de Vries</span></div>
+          <div><b>Optreden</b><br><span id="guestMetaRole">Zangeres / singer-songwriter</span></div>
+          <div><b>Programma</b><br><span id="guestMetaProgram">Gert-Jan's Kantine</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="guest-facts" id="guestFacts"></div>
+    <div class="guest-lower" id="guestPrep">
+      <div class="guest-panel">
+        <div class="guest-panel-head"><h2 id="guestPrepTitle">Jouw voorbereiding</h2><span class="badge green" id="guestProgressLabel">0/4 klaar</span></div>
+        <div class="guest-progress"><span id="guestProgressBar"></span></div>
+        <div id="guestChecklist"></div>
+      </div>
+      <div class="guest-panel">
+        <div class="guest-panel-head"><h2 id="guestPromptTitle">Gesprekstarter</h2><button class="btn secondary small" onclick="nextGuestPrompt()">Andere vraag</button></div>
+        <div class="prompt-card"><div class="prompt-label" id="guestPromptLabel">Voor in de uitzending</div><div class="prompt-text" id="guestPrompt"></div></div>
+      </div>
+    </div>
+    <div class="guest-panel" style="margin-top:16px;">
+      <h2 id="guestPracticalTitle">Praktisch in de studio</h2>
+      <div class="field-grid" id="guestPractical"></div>
+    </div>
+  </section>
+
+  <!-- MEDEWERKERS -->
+  <section class="page" id="page-medewerkers">
+    <div class="pagehead"><div><h1>Medewerkers</h1><p>Team van KantineMedia Production.</p></div></div>
+    <div class="emp-grid" id="empGrid"></div>
+  </section>
+
+  <!-- BEHEER -->
+  <section class="page" id="page-beheer">
+    <div class="pagehead">
+      <div><h1>Beheer</h1><p>Alle websitegegevens centraal en beveiligd aanpassen.</p></div>
+      <button class="btn danger small" onclick="logoutAdmin()">Uitloggen</button>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>📊 Dashboard cijfers</h3>
+        <div id="adminDashboardForm"></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>📢 Belangrijke informatie</h3>
+        <textarea id="adminMeldingen" rows="8"></textarea>
+      </div>
+      <div class="card">
+        <h3>ℹ️ Informatiepagina's</h3>
+        <div id="adminInfoForm"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>📩 FAX vragen beheren</h3>
+      <div class="field">
+        <button class="btn" onclick="openFaxModal()">+ Nieuwe vraag</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>✨ Gastenpagina</h3>
+      <div id="adminGuestForm"></div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>📰 Nieuwsselectie live info</h3>
+      <p style="color:var(--grey); font-size:12px; margin-bottom:12px;">Kies artikelen en sleep de geselecteerde regels in de gewenste volgorde.</p>
+      <div id="adminNewsForm"></div>
+      <button class="btn secondary small" style="margin-top:12px;" onclick="refreshNewsArticles(true)">↻ Nieuws vernieuwen</button>
+    </div>
+    <div class="card" style="max-width:620px; margin-top:16px;">
+      <h3>⚙️ Systeeminstellingen</h3>
+      <div class="field"><label>Actieve rol</label>
+        <select id="adminRoleSelect">
+          <option>Medewerker</option><option>Redacteur</option><option>Beheerder</option>
+        </select>
+      </div>
+      <div class="field">
+        <button class="btn" onclick="saveAdminData()">✓ Aanpassingen opslaan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTELLINGEN -->
+  <section class="page" id="page-instellingen">
+    <div class="pagehead"><div><h1>Instellingen</h1><p>Voorkeuren en systeeminstellingen.</p></div></div>
+    <div class="card" style="max-width:520px;">
+      <h3>Gebruikersrol</h3>
+      <div class="field"><label>Actieve rol (demo)</label>
+        <select id="roleSelect" onchange="changeRole(this.value)">
+          <option>Medewerker</option><option>Redacteur</option><option selected>Beheerder</option>
+        </select>
+      </div>
+      <p style="color:var(--grey); font-size:12.5px; line-height:1.6;">Medewerkers bekijken draaiboeken, informatie en FAX. Redacteuren beheren daarnaast FAX, informatie en draaiboeken. Beheerders beheren de volledige applicatie, inclusief medewerkers en instellingen. Echte login volgt in een latere versie.</p>
+      <div class="field" style="margin-top:16px;"><label>Data</label>
+        <button class="btn danger small" onclick="if(confirm('Alle lokale gegevens wissen?')){localStorage.clear(); location.reload();}">Alle lokale gegevens wissen</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast"></div>
+
+<div class="modal-bg" id="adminGateModalBg">
+  <div class="modal">
+    <h3>Beheer openen</h3>
+    <div class="field password-field">
+      <label>Wachtwoord</label>
+      <input id="adminGatePassword" type="password" placeholder="Vul wachtwoord in..." autocomplete="current-password" onkeydown="if(event.key==='Enter'){submitAdminGate();}">
+    </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeAdminGate()">Annuleren</button>
+      <button class="btn" onclick="submitAdminGate()">Inloggen</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="faxModalBg">
+  <div class="modal">
+    <h3>Nieuwe FAX-vraag</h3>
+    <div class="field"><label>Categorie</label>
+      <select id="faxNewCat"><option>Radio</option><option>Presentatie</option><option>Muziek</option><option>Productie</option><option>Social media</option><option>Techniek</option><option>Draaiboeken</option><option>Veelgestelde vragen</option></select>
+    </div>
+    <div class="field"><label>Vraag</label><input id="faxNewQ" placeholder="bv. Hoe laat moet ik aanwezig zijn?"></div>
+    <div class="field"><label>Antwoord</label><textarea id="faxNewA" rows="3"></textarea></div>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeFaxModal()">Annuleren</button>
+      <button class="btn" onclick="saveFax()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="meldingenModalBg">
+  <div class="modal">
+    <h3>Belangrijke informatie bewerken</h3>
+    <div class="field">
+      <label>Teksten</label>
+      <textarea id="meldingenEditor" rows="8" placeholder="Elke regel wordt als apart item weergegeven"></textarea>
+    </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeMeldingenEditor()">Annuleren</button>
+      <button class="btn" onclick="saveMeldingen()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="dashboardStatsModalBg">
+  <div class="modal">
+    <h3>Dashboard-cijfers aanpassen</h3>
+    <div class="field"><label>Bereik deze maand</label><input id="dashBereikValue" type="text"></div>
+    <div class="field"><label>Bereik deze maand delta</label><input id="dashBereikDelta" type="text"></div>
+    <div class="field"><label>Totaal aantal views</label><input id="dashViewsValue" type="text"></div>
+    <div class="field"><label>Totaal aantal views delta</label><input id="dashViewsDelta" type="text"></div>
+    <div class="field"><label>Luisteraars</label><input id="dashListenersValue" type="text"></div>
+    <div class="field"><label>Luisteraars delta</label><input id="dashListenersDelta" type="text"></div>
+    <div class="field"><label>Aantal uitzendingen</label><input id="dashShowsValue" type="text"></div>
+    <div class="field"><label>Aantal uitzendingen delta</label><input id="dashShowsDelta" type="text"></div>
+    <div class="field"><label>Gedraaide tracks</label><input id="dashTracksValue" type="text"></div>
+    <div class="field"><label>Gedraaide tracks delta</label><input id="dashTracksDelta" type="text"></div>
+    <div class="field"><label>Medewerkers</label><input id="dashStaffValue" type="text"></div>
+    <div class="field"><label>Medewerkers delta</label><input id="dashStaffDelta" type="text"></div>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeDashboardStatsEditor()">Annuleren</button>
+      <button class="btn" onclick="saveDashboardStatsConfig()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   ZELF AANPASSEN — GEEN PROGRAMMEERKENNIS NODIG
+   Alle namen, cijfers en teksten hieronder mag je gewoon overtypen.
+   Belangrijk: gebruik ALTIJD dubbele aanhalingstekens " " om tekst heen
+   als de tekst zelf een apostrof bevat (bv. "Gert-Jan's Kantine").
+   Gebruik anders gewoon de gewone rechte quotes zoals ze al staan.
+   ===================================================================== */
+
+/* ---------- helpers (niet aanpassen) ---------- */
+function toast(msg){const t=document.getElementById('toast'); t.innerHTML='✓ '+msg; t.classList.add('show'); clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),2200);}
+function load(key,fallback){try{const v=localStorage.getItem(key); return v?JSON.parse(v):fallback;}catch(e){return fallback;}}
+function save(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+function uid(){return 'id'+Math.random().toString(36).slice(2,10);}
+
+const NAV = [
+  {id:'dashboard', ic:'🏠', label:'Dashboard'},
+  {id:'draaiboeken', ic:'📋', label:'Draaiboeken'},
+  {id:'muziek', ic:'🎵', label:'Muziek'},
+  {id:'gasten', ic:'✨', label:'Gasten'},
+  {id:'liveinfo', ic:'🕘', label:'Live info'},
+  {id:'agenda', ic:'🎤', label:'Weekend Agenda'},
+  {id:'fax', ic:'📢', label:'FAX'},
+  {id:'informatie', ic:'ℹ️', label:'Informatie'},
+  {id:'medewerkers', ic:'👥', label:'Medewerkers'},
+  {id:'beheer', ic:'🔒', label:'Beheer'},
+  {id:'instellingen', ic:'⚙️', label:'Instellingen'},
+];
+const navList=document.getElementById('navList');
+NAV.forEach(n=>{
+  const d=document.createElement('div'); d.className='navlink'; d.dataset.p=n.id;
+  if(n.id==='beheer') d.classList.add('admin-link');
+  d.innerHTML=`<span class="ic">${n.ic}</span><span>${n.label}</span>`;
+  d.onclick=()=>showPage(n.id);
+  navList.appendChild(d);
+});
+function isAdminLoggedIn(){return localStorage.getItem('km_admin_loggedin')==='true';}
+function requireAdmin(){
+  if(isAdminLoggedIn()) return true;
+  openAdminGate();
+  return false;
+}
+function openAdminGate(){
+  const bg=document.getElementById('adminGateModalBg');
+  const input=document.getElementById('adminGatePassword');
+  if(bg){ bg.classList.add('show'); }
+  if(input){
+    input.value='';
+    setTimeout(()=>input.focus(), 100);
+  }
+}
+function closeAdminGate(){
+  const bg=document.getElementById('adminGateModalBg');
+  const input=document.getElementById('adminGatePassword');
+  if(bg){ bg.classList.remove('show'); }
+  if(input){ input.value=''; }
+}
+function submitAdminGate(){
+  const input=document.getElementById('adminGatePassword');
+  const pass=input ? input.value : '';
+  if(pass === 'K@NTINE'){
+    localStorage.setItem('km_admin_loggedin','true');
+    closeAdminGate();
+    toast('Beheer geopend');
+    showPage('beheer');
+    return true;
+  }
+  if(input){
+    input.value='';
+    input.focus();
+  }
+  toast('Wachtwoord onjuist');
+  return false;
+}
+function logoutAdmin(){
+  localStorage.setItem('km_admin_loggedin','false');
+  showPage('dashboard');
+  toast('Uitgelogd');
+}
+function showPage(id){
+  if(id==='beheer' && !isAdminLoggedIn()){
+    openAdminGate();
+    return;
+  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if(page){ page.classList.add('active'); }
+  document.querySelectorAll('.navlink').forEach(l=>l.classList.toggle('active', l.dataset.p===id));
+  document.getElementById('sidebar').classList.remove('open');
+  if(id==='dashboard') renderDashboard();
+  if(id==='draaiboeken') renderDraaiboekenList();
+  if(id==='muziek') renderLibTracks();
+  if(id==='gasten') renderGuestPage();
+  if(id==='liveinfo') renderLiveInfoPage();
+  if(id==='agenda') renderAgenda();
+  if(id==='fax') renderFax();
+  if(id==='informatie') renderInfo();
+  if(id==='medewerkers') renderEmployees();
+  if(id==='beheer') renderAdminPage();
+  if(id==='instellingen'){};
+  window.scrollTo(0,0);
+}
+document.getElementById('roleSelect').value = load('km_role','Beheerder');
+
+const BLOCK_TYPES = {
+  'Muziek':'#19C463','Praat':'#58A6FF','Interview':'#B983FF','Reclame':'#E3B341',
+  'Jingle':'#35E07A','Nieuws':'#F85149','Mededeling':'#8B949E','Overig':'#DDA0DD'
+};
+
+const DEFAULT_DASHBOARD_STATS = [
+  {ic:'📊', lbl:'Bereik deze maand', val:'48.200', d:'-2,4%'},
+  {ic:'▶️', lbl:'Totaal aantal views', val:'19.860', d:'+7,1%'},
+  {ic:'🎧', lbl:'Luisteraars', val:'12.500', d:'+0,0%'},
+  {ic:'📻', lbl:'Aantal uitzendingen', val:'3', d:'0'},
+  {ic:'🎵', lbl:'Gedraaide tracks', val:'27', d:'+1'},
+  {ic:'👥', lbl:'Medewerkers', val:'3', d:'0'},
+];
+function getDashboardStatsConfig(){
+  const saved=load('km_dashboard_stats', null);
+  if(Array.isArray(saved) && saved.length){
+    return saved.map((item, index)=>({ ...DEFAULT_DASHBOARD_STATS[index], ...item }));
+  }
+  save('km_dashboard_stats', DEFAULT_DASHBOARD_STATS);
+  return DEFAULT_DASHBOARD_STATS.map(item => ({...item}));
+}
+function openDashboardStatsEditor(){
+  if(!requireAdmin()) return;
+  const items=getDashboardStatsConfig();
+  const fields = [
+    ['dashBereikValue', items[0].val],
+    ['dashBereikDelta', items[0].d],
+    ['dashViewsValue', items[1].val],
+    ['dashViewsDelta', items[1].d],
+    ['dashListenersValue', items[2].val],
+    ['dashListenersDelta', items[2].d],
+    ['dashShowsValue', items[3].val],
+    ['dashShowsDelta', items[3].d],
+    ['dashTracksValue', items[4].val],
+    ['dashTracksDelta', items[4].d],
+    ['dashStaffValue', items[5].val],
+    ['dashStaffDelta', items[5].d],
+  ];
+  fields.forEach(([id, value]) => document.getElementById(id).value = value || '');
+  document.getElementById('dashboardStatsModalBg').classList.add('show');
+}
+function closeDashboardStatsEditor(){
+  document.getElementById('dashboardStatsModalBg').classList.remove('show');
+}
+function saveDashboardStatsConfig(){
+  if(!requireAdmin()) return;
+  const values = [
+    {ic:'📊', lbl:'Bereik deze maand', val:document.getElementById('dashBereikValue').value || '0', d:document.getElementById('dashBereikDelta').value || '0'},
+    {ic:'▶️', lbl:'Totaal aantal views', val:document.getElementById('dashViewsValue').value || '0', d:document.getElementById('dashViewsDelta').value || '0'},
+    {ic:'🎧', lbl:'Luisteraars', val:document.getElementById('dashListenersValue').value || '0', d:document.getElementById('dashListenersDelta').value || '0'},
+    {ic:'📻', lbl:'Aantal uitzendingen', val:document.getElementById('dashShowsValue').value || '0', d:document.getElementById('dashShowsDelta').value || '0'},
+    {ic:'🎵', lbl:'Gedraaide tracks', val:document.getElementById('dashTracksValue').value || '0', d:document.getElementById('dashTracksDelta').value || '0'},
+    {ic:'👥', lbl:'Medewerkers', val:document.getElementById('dashStaffValue').value || '0', d:document.getElementById('dashStaffDelta').value || '0'},
+  ];
+  save('km_dashboard_stats', values);
+  closeDashboardStatsEditor();
+  renderDashboard();
+  toast('Dashboard-cijfers opgeslagen');
+}
+
+/* ---------- VOORBEELDGEGEVENS — worden 1x geladen bij eerste bezoek ---------- */
+function spotifyCover(seed, title){
+  const palette = [
+    'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1525201548942-d8732f6617a0?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1496284427485-f59461c7a8f1?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1499415479124-43c32433a620?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=800&q=80'
+  ];
+  return palette[(seed + title.length) % palette.length];
+}
+function spotifyPreview(seed){
+  const previews = [
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3'
+  ];
+  return previews[seed % previews.length];
+}
+const SPOTIFY_LIBRARY = [
+  {artiest:'The Beatles', titel:'Hey Jude', album:'Help!', duur:'4:08', jaar:1968, genre:'Classic Rock', cover:spotifyCover(0,'Hey Jude'), preview:spotifyPreview(0)},
+  {artiest:'Daft Punk', titel:'Get Lucky', album:'Random Access Memories', duur:'6:09', jaar:2013, genre:'Disco Funk', cover:spotifyCover(1,'Get Lucky'), preview:spotifyPreview(1)},
+  {artiest:'Adele', titel:'Rolling in the Deep', album:'21', duur:'3:48', jaar:2011, genre:'Pop Soul', cover:spotifyCover(2,'Rolling in the Deep'), preview:spotifyPreview(2)},
+  {artiest:'Coldplay', titel:'Yellow', album:'Parachutes', duur:'4:29', jaar:2000, genre:'Alternative Rock', cover:spotifyCover(3,'Yellow'), preview:spotifyPreview(3)},
+  {artiest:'Ed Sheeran', titel:'Shape of You', album:'Divide', duur:'3:53', jaar:2017, genre:'Pop', cover:spotifyCover(4,'Shape of You'), preview:spotifyPreview(4)},
+  {artiest:'M83', titel:'Midnight City', album:'Hurry Up, We’re Dreaming', duur:'4:03', jaar:2011, genre:'Indie', cover:spotifyCover(5,'Midnight City'), preview:spotifyPreview(5)},
+  {artiest:'Lizzo', titel:'About Damn Time', album:'Special', duur:'3:11', jaar:2022, genre:'Pop', cover:spotifyCover(6,'About Damn Time'), preview:spotifyPreview(6)},
+  {artiest:'Nielson', titel:'Kylie', album:'Rio', duur:'2:53', jaar:2016, genre:'Pop', cover:spotifyCover(7,'Kylie'), preview:spotifyPreview(7)},
+  {artiest:'Di-rect', titel:'Soulsister', album:'Real Life', duur:'3:15', jaar:2010, genre:'Rock', cover:spotifyCover(8,'Soulsister'), preview:spotifyPreview(8)},
+  {artiest:'Kraantje Pappie', titel:'Krossoverrr', album:'Zwart Geld', duur:'2:38', jaar:2017, genre:'Hiphop', cover:spotifyCover(9,'Krossoverrr'), preview:spotifyPreview(9)},
+  {artiest:'Suzan & Freek', titel:'Vergeet Me Niet', album:'De Bank van Boos', duur:'3:12', jaar:2019, genre:'Pop', cover:spotifyCover(10,'Vergeet Me Niet'), preview:spotifyPreview(10)},
+  {artiest:'Kensington', titel:'Simmer Down', album:'Time', duur:'3:44', jaar:2018, genre:'Rock', cover:spotifyCover(11,'Simmer Down'), preview:spotifyPreview(11)},
+  {artiest:'S10', titel:'De Diepte', album:'Snelweg Ballads', duur:'2:59', jaar:2022, genre:'Pop', cover:spotifyCover(12,'De Diepte'), preview:spotifyPreview(12)},
+  {artiest:'Guus Meeuwis', titel:'Het Is Een Nacht...', album:'Colors', duur:'4:02', jaar:1995, genre:'Nederlandstalig', cover:spotifyCover(13,'Het Is Een Nacht...'), preview:spotifyPreview(13)},
+  {artiest:'Froukje', titel:'Vlinders', album:'Onwijs', duur:'2:47', jaar:2020, genre:'Pop', cover:spotifyCover(14,'Vlinders'), preview:spotifyPreview(14)},
+  {artiest:"Chef'Special", titel:'Sirens', album:'Amigos', duur:'3:21', jaar:2016, genre:'Indie', cover:spotifyCover(15,'Sirens'), preview:spotifyPreview(15)},
+  {artiest:'Davina Michelle', titel:'Deuren Dicht', album:'Single', duur:'3:05', jaar:2021, genre:'Pop', cover:spotifyCover(16,'Deuren Dicht'), preview:spotifyPreview(16)},
+  {artiest:'Rihanna', titel:'Umbrella', album:'Good Girl Gone Bad', duur:'3:36', jaar:2007, genre:'Pop', cover:spotifyCover(17,'Umbrella'), preview:spotifyPreview(17)},
+  {artiest:'The Weeknd', titel:'Blinding Lights', album:'After Hours', duur:'3:20', jaar:2020, genre:'Synth Pop', cover:spotifyCover(18,'Blinding Lights'), preview:spotifyPreview(18)},
+  {artiest:'Post Malone', titel:'Sunflower', album:'Hollywood’s Bleeding', duur:'2:38', jaar:2018, genre:'Hip-Hop', cover:spotifyCover(19,'Sunflower'), preview:spotifyPreview(19)},
+  {artiest:'Avicii', titel:'Wake Me Up', album:'True', duur:'4:09', jaar:2013, genre:'Electronic', cover:spotifyCover(20,'Wake Me Up'), preview:spotifyPreview(20)},
+  {artiest:'Queen', titel:'Don’t Stop Me Now', album:'Jazz', duur:'3:29', jaar:1978, genre:'Rock', cover:spotifyCover(21,'Dont Stop Me Now'), preview:spotifyPreview(21)},
+  {artiest:'Beyoncé', titel:'Halo', album:'I Am... Sasha Fierce', duur:'4:22', jaar:2009, genre:'R&B', cover:spotifyCover(22,'Halo'), preview:spotifyPreview(22)},
+  {artiest:'David Guetta', titel:'Titanium', album:'Nothing But the Beat', duur:'4:05', jaar:2011, genre:'Dance', cover:spotifyCover(23,'Titanium'), preview:spotifyPreview(23)},
+  {artiest:'Bruno Mars', titel:'24K Magic', album:'24K Magic', duur:'3:46', jaar:2016, genre:'R&B', cover:spotifyCover(24,'24K Magic'), preview:spotifyPreview(24)},
+  {artiest:'Hozier', titel:'Take Me to Church', album:'Hozier', duur:'3:52', jaar:2013, genre:'Indie Folk', cover:spotifyCover(25,'Take Me to Church'), preview:spotifyPreview(25)},
+  {artiest:'Miley Cyrus', titel:'Flowers', album:'Endless Summer Vacation', duur:'3:18', jaar:2023, genre:'Pop', cover:spotifyCover(26,'Flowers'), preview:spotifyPreview(26)},
+  {artiest:'Eminem', titel:'Lose Yourself', album:'8 Mile', duur:'5:26', jaar:2002, genre:'Hip-Hop', cover:spotifyCover(27,'Lose Yourself'), preview:spotifyPreview(27)},
+  {artiest:'Dua Lipa', titel:'Levitating', album:'Future Nostalgia', duur:'3:23', jaar:2020, genre:'Pop', cover:spotifyCover(28,'Levitating'), preview:spotifyPreview(28)},
+  {artiest:'Harry Styles', titel:'As It Was', album:'Harry’s House', duur:'2:47', jaar:2022, genre:'Pop', cover:spotifyCover(29,'As It Was'), preview:spotifyPreview(29)},
+  {artiest:'Taylor Swift', titel:'Shake It Off', album:'1989', duur:'3:39', jaar:2014, genre:'Pop', cover:spotifyCover(30,'Shake It Off'), preview:spotifyPreview(30)},
+  {artiest:'Imagine Dragons', titel:'Believer', album:'Evolve', duur:'3:24', jaar:2017, genre:'Alt Rock', cover:spotifyCover(31,'Believer'), preview:spotifyPreview(31)},
+  {artiest:'Maroon 5', titel:'Moves Like Jagger', album:'Hands All Over', duur:'3:21', jaar:2011, genre:'Pop Rock', cover:spotifyCover(32,'Moves Like Jagger'), preview:spotifyPreview(32)},
+  {artiest:'Sam Smith', titel:'Stay With Me', album:'In the Lonely Hour', duur:'2:52', jaar:2014, genre:'Soul', cover:spotifyCover(33,'Stay With Me'), preview:spotifyPreview(33)},
+  {artiest:'Katy Perry', titel:'Firework', album:'Teenage Dream', duur:'3:48', jaar:2010, genre:'Pop', cover:spotifyCover(34,'Firework'), preview:spotifyPreview(34)},
+  {artiest:'Calvin Harris', titel:'Summer', album:'Motion', duur:'3:42', jaar:2014, genre:'Dance', cover:spotifyCover(35,'Summer'), preview:spotifyPreview(35)},
+  {artiest:'Billie Eilish', titel:'Ocean Eyes', album:'Dont Smile at Me', duur:'3:21', jaar:2016, genre:'Alt Pop', cover:spotifyCover(36,'Ocean Eyes'), preview:spotifyPreview(36)},
+  {artiest:'OneRepublic', titel:'Counting Stars', album:'Native', duur:'4:17', jaar:2013, genre:'Pop Rock', cover:spotifyCover(37,'Counting Stars'), preview:spotifyPreview(37)},
+  {artiest:'Sia', titel:'Cheap Thrills', album:'This Is Acting', duur:'3:31', jaar:2016, genre:'Pop', cover:spotifyCover(38,'Cheap Thrills'), preview:spotifyPreview(38)},
+  {artiest:'Kygo', titel:'Firestone', album:'Cloud Nine', duur:'3:26', jaar:2015, genre:'Tropical House', cover:spotifyCover(39,'Firestone'), preview:spotifyPreview(39)},
+  {artiest:'Ariana Grande', titel:'7 Rings', album:'Thank U, Next', duur:'3:03', jaar:2019, genre:'Pop', cover:spotifyCover(40,'7 Rings'), preview:spotifyPreview(40)}
+];
+
+if(!localStorage.getItem('km_seeded')){
+  save('km_muziek', SPOTIFY_LIBRARY);
+} else {
+  const existingMusic = load('km_muziek', []);
+  if (!Array.isArray(existingMusic) || existingMusic.length < 25) {
+    save('km_muziek', SPOTIFY_LIBRARY);
+  }
+}
+  save('km_fax',[
+    {id:uid(),cat:'Radio',q:'Hoe laat moet ik aanwezig zijn voor een uitzending?',a:'Minimaal 30 minuten voor aanvang van je uitzending, zodat er tijd is voor een geluidscheck en het doornemen van het draaiboek.', fav:true},
+    {id:uid(),cat:'Presentatie',q:'Wat doe ik als een gast niet komt opdagen?',a:'Meld dit direct bij de eindredactie en vul het item met een extra muziekblok of achtergrondverhaal uit de FAX-categorie Radio.', fav:false},
+    {id:uid(),cat:'Muziek',q:'Mag ik zelf nummers toevoegen aan een uitzending?',a:'Ja, via de muziekzoekfunctie in de Draaiboek Builder. Zorg dat het nummer past bij het programmaformat.', fav:false},
+    {id:uid(),cat:'Techniek',q:'Wat doe ik bij een technische storing in de studio?',a:'Schakel direct over naar de noodplaylist en waarschuw de technische dienst via de interne lijn.', fav:true},
+    {id:uid(),cat:'Draaiboeken',q:'Hoe dupliceer ik een bestaand draaiboek?',a:'Open het draaiboek en klik rechtsboven op "Dupliceer". Er wordt een kopie aangemaakt die je direct kan aanpassen.', fav:false},
+    {id:uid(),cat:'Social media',q:'Wanneer plaatsen we content over een uitzending?',a:'Bij voorkeur 24 uur van tevoren als aankondiging, en direct na afloop een highlight of quote uit de uitzending.', fav:false},
+  ]);
+  save('km_info',{
+    'KantineMedia':'KantineMedia is de mediaorganisatie achter radio-uitzendingen, video- en fotoproducties en social media content. We maken herkenbare, lokale media met een professionele uitstraling.',
+    'Radio':'Uitzendingen lopen via het draaiboeksysteem. Elk programma heeft een vaste presentator en structuur. Wijzigingen in het rooster worden minimaal een week vooraf gecommuniceerd.',
+    'Studio':'De studio is uitgerust met een digitale mengtafel, twee microfoons en een playout-systeem. Reserveer de studio via de planning en meld apparatuurstoringen direct.',
+    'Productie':'Video- en fotoproducties worden gepland via de eindredactie. Leverbestanden worden aangeleverd volgens de huisstijl: donker, groen accent, strakke typografie.',
+    'Contact':'Eindredactie: redactie@kantinemedia.nl — Techniek: techniek@kantinemedia.nl — Planning: planning@kantinemedia.nl'
+  });
+  save('km_employees',[
+    {naam:'Gert-Jan Wensink', functie:'Radio / Presentatie / Productie', programma:"Gert-Jan's Kantine - Upcoming Talents", contact:'gert-jan@kantinemedia.nl', status:'Actief'},
+    {naam:'Dick Gensen', functie:'Hoofd Productie', programma:"Alle programma's", contact:'dick@kantinemedia.nl', status:'Actief'},
+    {naam:'Eline van Huffelen', functie:'Productie', programma:"Alle programma's", contact:'eline@kantinemedia.nl', status:'Actief'},
+  ]);
+  save('km_uitzendingen',[
+    {programma:'Upcoming Talents', presentator:'Gert-Jan Wensink', datum:'2026-09-25', tijd:'17:00', status:'In voorbereiding'},
+    {programma:'Upcoming Talents Non-Stop', presentator:'Ralf Naylo', datum:'2026-10-02', tijd:'19:00', status:'Klaar'},
+    {programma:'Upcoming Talents', presentator:'Gert-Jan Wensink', datum:'2026-10-09', tijd:'19:00', status:'Nog niet gestart'},
+  ]);
+  save('km_seeded',true);
+
+/* ---------- EENMALIGE UPDATE — ververst medewerkers/uitzendingen ook als de app al eerder open is geweest ---------- */
+if(!localStorage.getItem('km_seeded_v2')){
+  save('km_employees',[
+    {naam:'Gert-Jan Wensink', functie:'Radio / Presentatie / Productie', programma:"Gert-Jan's Kantine - Upcoming Talents", contact:'gert-jan@kantinemedia.nl', status:'Actief'},
+    {naam:'Dick Gensen', functie:'Hoofd Productie', programma:"Alle programma's", contact:'dick@kantinemedia.nl', status:'Actief'},
+    {naam:'Eline van Huffelen', functie:'Productie', programma:"Alle programma's", contact:'eline@kantinemedia.nl', status:'Actief'},
+  ]);
+  save('km_uitzendingen',[
+    {programma:'Upcoming Talents', presentator:'Gert-Jan Wensink', datum:'2026-09-25', tijd:'17:00', status:'In voorbereiding'},
+    {programma:'Upcoming Talents Non-Stop', presentator:'Ralf Naylo', datum:'2026-10-02', tijd:'19:00', status:'Klaar'},
+    {programma:'Upcoming Talents', presentator:'Gert-Jan Wensink', datum:'2026-10-09', tijd:'19:00', status:'Nog niet gestart'},
+  ]);
+  save('km_seeded_v2',true);
+}
+
+/* ---------- DASHBOARD ---------- */
+function getDashboardMeldingen(){
+  const defaults=[
+    '📢 Studio B is vrijdag buiten gebruik wegens onderhoud.',
+    '📢 Nieuw playout-systeem live vanaf volgende week.',
+    '📢 Deadline social content weekendspecial: donderdag 17:00.'
+  ];
+  const saved=load('km_meldingen',null);
+  if(Array.isArray(saved) && saved.length){ return saved; }
+  save('km_meldingen', defaults);
+  return defaults;
+}
+function getGreetingByTime(){
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Goedemorgen';
+  if (hour < 18) return 'Goedemiddag';
+  if (hour < 22) return 'Goedenavond';
+  return 'Goedenacht';
+}
+function updateDashboardGreeting(){
+  const el = document.getElementById('dashboardGreeting');
+  if (!el) return;
+  const greeting = getGreetingByTime();
+  el.textContent = `${greeting}, Gert-Jan 👋`;
+}
+function updateDashboardClock(){
+  const el = document.getElementById('dashboardClock');
+  if (!el) return;
+  const now = new Date();
+  const time = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  el.textContent = time;
+}
+function renderDashboard(){
+  updateDashboardGreeting();
+  updateDashboardClock();
+  const dashboardStats=getDashboardStatsConfig();
+  document.getElementById('dashStats').innerHTML = dashboardStats.map(s=>`
+    <div class="stat-card"><div class="lbl">${s.ic} ${s.lbl}</div><div class="val">${s.val}</div><div class="delta">${s.d} t.o.v. vorige periode</div></div>`).join('');
+
+  const weeks=[32,38,41,36,44,48];
+  const max=Math.max(...weeks);
+  document.getElementById('bereikChart').innerHTML = weeks.map((v,i)=>`
+    <div class="bar-col"><div class="bar" style="height:${(v/max*100)}%"></div><div class="bl">wk ${i+1}</div></div>`).join('');
+
+  const uitz = load('km_uitzendingen',[]);
+  document.getElementById('komendeList').innerHTML = uitz.slice(0,4).map(u=>`
+    <div class="list-row"><div><div class="t1">${u.programma}</div><div class="t2">${u.presentator} · ${u.datum} · ${u.tijd}</div></div>${statusBadge(u.status)}</div>`).join('') || '<div class="empty">Geen uitzendingen gepland.</div>';
+
+  const dbs = load('km_draaiboeken',[]);
+  document.getElementById('recenteDraaiboeken').innerHTML = dbs.slice(-4).reverse().map(d=>`
+    <div class="list-row"><div><div class="t1">${d.programma||'Zonder titel'}</div><div class="t2">${d.datum||''} · ${d.blocks.length} blokken</div></div><span class="badge grey">Concept</span></div>`).join('') || '<div class="empty">Nog geen draaiboeken opgeslagen.</div>';
+
+  const meldingen=getDashboardMeldingen();
+  document.getElementById('meldingen').innerHTML = meldingen.map(msg=>`
+    <div class="list-row"><div class="t1">${msg}</div></div>`).join('') || '<div class="empty">Geen belangrijke informatie.</div>';
+}
+function openMeldingenEditor(){
+  if(!requireAdmin()) return;
+  const textarea=document.getElementById('meldingenEditor');
+  textarea.value=getDashboardMeldingen().join('\n');
+  document.getElementById('meldingenModalBg').classList.add('show');
+}
+function closeMeldingenEditor(){
+  document.getElementById('meldingenModalBg').classList.remove('show');
+}
+function saveMeldingen(){
+  if(!requireAdmin()) return;
+  const value=document.getElementById('meldingenEditor').value;
+  const rows=value.split('\n').map(r=>r.trim()).filter(Boolean);
+  save('km_meldingen', rows.length ? rows : ['📢 Geen belangrijke informatie.']);
+  closeMeldingenEditor();
+  renderDashboard();
+  toast('Belangrijke informatie opgeslagen');
+}
+function changeRole(role){
+  if(!requireAdmin()){
+    document.getElementById('roleSelect').value = load('km_role','Beheerder');
+    return;
+  }
+  localStorage.setItem('km_role', role);
+  document.getElementById('roleSelect').value = role;
+  toast('Rol bijgewerkt');
+}
+function statusBadge(s){
+  const map={'Klaar':['green','🟢'],'In voorbereiding':['amber','🟡'],'Nog niet gestart':['red','🔴'],'Afgerond':['grey','⚪']};
+  const [c,ic]=map[s]||['grey','⚪'];
+  return `<span class="badge ${c}">${ic} ${s}</span>`;
+}
+
+/* ---------- DRAAIBOEKEN ---------- */
+let currentDraaiboekId=null;
+function renderDraaiboekenList(){
+  const dbs=load('km_draaiboeken',[]);
+  const el=document.getElementById('draaiboekenList');
+  if(!dbs.length){el.innerHTML='<div class="empty">Nog geen draaiboeken. Klik op "+ Nieuwe uitzending" om te beginnen.</div>'; return;}
+  el.innerHTML = dbs.slice().reverse().map(d=>`
+    <div class="dr-card" onclick="openDraaiboek('${d.id}')">
+      <h4>${d.programma||'Zonder titel'}</h4>
+      <p>${d.presentator||'Geen presentator'} · ${d.datum||'geen datum'}</p>
+      <p>${d.blocks.length} blokken · ${d.start||'--:--'}–${d.eind||'--:--'}</p>
+      <div class="row">
+        <button class="btn secondary small" onclick="event.stopPropagation(); duplicateDraaiboek('${d.id}')">⧉ Dupliceer</button>
+        <button class="btn danger small" onclick="event.stopPropagation(); deleteDraaiboek('${d.id}')">🗑 Verwijder</button>
+      </div>
+    </div>`).join('');
+}
+function newDraaiboek(){
+  currentDraaiboekId=null;
+  document.getElementById('editorTitle').textContent='Nieuwe uitzending';
+  ['programma','presentator','datum','gast','thema','opm'].forEach(k=>document.getElementById('f-'+k).value='');
+  document.getElementById('f-start').value='17:00'; document.getElementById('f-eind').value='18:00';
+  currentBlocks=[
+    {id:uid(), tijd:'17:00', type:'Jingle', inhoud:'Openingstune', muziek:'', opm:'Intro'},
+    {id:uid(), tijd:'17:01', type:'Praat', inhoud:'Welkom bij de uitzending', muziek:'', opm:''},
+  ];
+  renderTimeline();
+  showPage('editor');
+}
+let currentBlocks=[];
+function openDraaiboek(id){
+  const dbs=load('km_draaiboeken',[]); const d=dbs.find(x=>x.id===id); if(!d)return;
+  currentDraaiboekId=id;
+  document.getElementById('editorTitle').textContent=d.programma||'Draaiboek';
+  document.getElementById('f-programma').value=d.programma||'';
+  document.getElementById('f-presentator').value=d.presentator||'';
+  document.getElementById('f-datum').value=d.datum||'';
+  document.getElementById('f-start').value=d.start||'17:00';
+  document.getElementById('f-eind').value=d.eind||'18:00';
+  document.getElementById('f-thema').value=d.thema||'';
+  document.getElementById('f-gast').value=d.gast||'';
+  document.getElementById('f-opm').value=d.opm||'';
+  currentBlocks=JSON.parse(JSON.stringify(d.blocks));
+  renderTimeline();
+  showPage('editor');
+}
+function duplicateDraaiboek(id){
+  const dbs=load('km_draaiboeken',[]); const d=dbs.find(x=>x.id===id); if(!d)return;
+  const copy=JSON.parse(JSON.stringify(d)); copy.id=uid(); copy.programma=(d.programma||'')+' (kopie)';
+  dbs.push(copy); save('km_draaiboeken',dbs); renderDraaiboekenList(); toast('Draaiboek gedupliceerd');
+}
+function duplicateCurrent(){
+  if(!currentDraaiboekId){toast('Sla eerst op voordat je dupliceert'); return;}
+  duplicateDraaiboek(currentDraaiboekId); showPage('draaiboeken');
+}
+function deleteDraaiboek(id){
+  if(!confirm('Dit draaiboek verwijderen?'))return;
+  let dbs=load('km_draaiboeken',[]); dbs=dbs.filter(x=>x.id!==id); save('km_draaiboeken',dbs); renderDraaiboekenList(); toast('Draaiboek verwijderd');
+}
+function saveDraaiboek(){
+  const dbs=load('km_draaiboeken',[]);
+  const obj={
+    id: currentDraaiboekId||uid(),
+    programma:document.getElementById('f-programma').value||'Zonder titel',
+    presentator:document.getElementById('f-presentator').value,
+    datum:document.getElementById('f-datum').value,
+    start:document.getElementById('f-start').value,
+    eind:document.getElementById('f-eind').value,
+    thema:document.getElementById('f-thema').value,
+    gast:document.getElementById('f-gast').value,
+    opm:document.getElementById('f-opm').value,
+    blocks:currentBlocks
+  };
+  if(currentDraaiboekId){
+    const idx=dbs.findIndex(x=>x.id===currentDraaiboekId); dbs[idx]=obj;
+  } else { dbs.push(obj); currentDraaiboekId=obj.id; }
+  save('km_draaiboeken',dbs);
+  toast('Draaiboek opgeslagen');
+}
+
+/* timeline blocks */
+function renderTimeline(){
+  const el=document.getElementById('timeline');
+  document.getElementById('blockCount').textContent=`— ${currentBlocks.length} blokken`;
+  el.innerHTML = currentBlocks.map((b,i)=>`
+    <div class="block" style="--type-color:${BLOCK_TYPES[b.type]}">
+      <input class="block-time" type="text" inputmode="numeric" maxlength="5" pattern="[0-9]{2}:[0-9]{2}" placeholder="00:00" value="${b.tijd||''}" aria-label="Tijd van blok ${i+1}" onchange="updateBlockTime('${b.id}',this.value)" onblur="updateBlockTime('${b.id}',this.value)">
+      <select onchange="updateBlock('${b.id}','type',this.value)">
+        ${Object.keys(BLOCK_TYPES).map(t=>`<option ${t===b.type?'selected':''}>${t}</option>`).join('')}
+      </select>
+      <input placeholder="Inhoud" value="${b.inhoud.replace(/"/g,'&quot;')}" onchange="updateBlock('${b.id}','inhoud',this.value)">
+      <input placeholder="Muziek" value="${b.muziek.replace(/"/g,'&quot;')}" onchange="updateBlock('${b.id}','muziek',this.value)">
+      <input placeholder="Opmerking" value="${b.opm.replace(/"/g,'&quot;')}" onchange="updateBlock('${b.id}','opm',this.value)">
+      <div class="btnstack">
+        <button class="icobtn" title="Omhoog" onclick="moveBlock('${b.id}',-1)">↑</button>
+        <button class="icobtn" title="Omlaag" onclick="moveBlock('${b.id}',1)">↓</button>
+        <button class="icobtn" title="Verwijder" onclick="removeBlock('${b.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+function updateBlock(id,field,val){const b=currentBlocks.find(x=>x.id===id); if(b) b[field]=val;}
+function updateBlockTime(id,val){
+  const b=currentBlocks.find(x=>x.id===id); if(!b)return;
+  const digits=String(val||'').replace(/[^0-9]/g,'').slice(0,4);
+  if(digits.length===3) val=`0${digits[0]}:${digits.slice(1)}`;
+  else if(digits.length===4) val=`${digits.slice(0,2)}:${digits.slice(2)}`;
+  if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(val)){
+    toast('Gebruik een tijd tussen 00:00 en 23:59');
+    return;
+  }
+  b.tijd=val;
+  renderTimeline();
+}
+function moveBlock(id,dir){
+  const i=currentBlocks.findIndex(x=>x.id===id); const j=i+dir;
+  if(j<0||j>=currentBlocks.length)return;
+  [currentBlocks[i],currentBlocks[j]]=[currentBlocks[j],currentBlocks[i]];
+  renderTimeline();
+}
+function removeBlock(id){currentBlocks=currentBlocks.filter(x=>x.id!==id); renderTimeline();}
+function addBlock(){
+  currentBlocks.push({id:uid(), tijd:'18:00', type:'Overig', inhoud:'', muziek:'', opm:''});
+  renderTimeline();
+}
+
+/* music search inside editor */
+function renderTracks(){
+  const q=(document.getElementById('musicQuery').value||'').toLowerCase();
+  const lib=load('km_muziek',[]).map((t,i)=>({
+    ...t,
+    cover: t.cover || spotifyCover(i, t.titel || 'Track'),
+    preview: t.preview || spotifyPreview(i)
+  }));
+  const results=lib.filter(t=>!q || (t.artiest+t.titel+t.album).toLowerCase().includes(q)).slice(0,8);
+  document.getElementById('trackList').innerHTML = results.map((t,i)=>`
+    <div class="track">
+      <div class="track-main">
+        <img class="track-cover" src="${t.cover}" alt="${t.artiest} ${t.titel}">
+        <div class="info">
+          <b>${t.artiest} – ${t.titel}</b>
+          <div>${t.album} · ${t.duur} · ${t.jaar} · ${t.genre}</div>
+        </div>
+      </div>
+      <div class="track-actions">
+        <audio class="mini-player" controls preload="none" src="${t.preview}"></audio>
+        <button class="btn small" onclick='addTrackToBlock(${JSON.stringify(t.artiest+" – "+t.titel).replace(/'/g,"&apos;")})'>+ Toevoegen</button>
+      </div>
+    </div>`).join('') || '<div class="empty">Geen resultaten.</div>';
+}
+function addTrackToBlock(name){
+  currentBlocks.push({id:uid(), tijd:'18:00', type:'Muziek', inhoud:name, muziek:'🎵', opm:''});
+  renderTimeline(); toast('Track toegevoegd aan draaiboek');
+}
+function renderLibTracks(){
+  const q=(document.getElementById('musicQueryLib').value||'').toLowerCase();
+  const lib=load('km_muziek',[]).map((t,i)=>({
+    ...t,
+    cover: t.cover || spotifyCover(i, t.titel || 'Track'),
+    preview: t.preview || spotifyPreview(i)
+  }));
+  const results=lib.filter(t=>!q || (t.artiest+t.titel+t.album).toLowerCase().includes(q));
+  document.getElementById('libTrackList').innerHTML = results.map((t,i)=>`
+    <div class="track">
+      <div class="track-main">
+        <img class="track-cover" src="${t.cover}" alt="${t.artiest} ${t.titel}">
+        <div class="info">
+          <b>${t.artiest} – ${t.titel}</b>
+          <div>${t.album} · ${t.duur} · ${t.jaar} · ${t.genre}</div>
+        </div>
+      </div>
+      <div class="track-actions">
+        <audio class="mini-player" controls preload="none" src="${t.preview}"></audio>
+      </div>
+    </div>`).join('') || '<div class="empty">Geen resultaten.</div>';
+}
+
+/* ---------- LIVE INFO PAGE ---------- */
+let newsRefreshTimer=null;
+function scheduleHourlyNewsRefresh(){
+  if(newsRefreshTimer) return;
+  const now=new Date();
+  const nextHour=new Date(now);
+  nextHour.setMinutes(60,0,0);
+  const delay=nextHour.getTime()-now.getTime();
+  newsRefreshTimer=setTimeout(()=>{
+    const refresh=()=>loadRegionNews().then(items=>{renderLiveNewsFeed(items); renderLiveNewsManager();});
+    refresh();
+    newsRefreshTimer=setInterval(refresh,60*60*1000);
+  },delay);
+}
+function getNearestNextBlock(){
+  const dbs = load('km_draaiboeken', []);
+  const latest = dbs.length ? dbs[dbs.length - 1] : null;
+  if (!latest || !Array.isArray(latest.blocks) || !latest.blocks.length) {
+    return { label: 'Geen programma beschikbaar', time: null, countdown: null, details: 'Vul eerst een draaiboek in.' };
+  }
+
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  let next = null;
+
+  for (const block of latest.blocks) {
+    if (!block.tijd) continue;
+    const [h, m] = String(block.tijd).split(':').map(Number);
+    const blockMinutes = h * 60 + m;
+    if (blockMinutes >= currentMinutes) {
+      next = { ...block, blockMinutes };
+      break;
+    }
+  }
+
+  if (!next) {
+    next = latest.blocks[0];
+  }
+
+  const target = next && next.tijd ? next.tijd : null;
+  if (!target) return { label: 'Geen programma beschikbaar', time: null, countdown: null, details: 'Geen tijdstip ingesteld.' };
+
+  const [h, m] = String(target).split(':').map(Number);
+  const targetMinutes = h * 60 + m;
+  const diffMinutes = targetMinutes - currentMinutes;
+  let countdown = diffMinutes > 0 ? diffMinutes : (diffMinutes + 24 * 60);
+
+  return {
+    label: next.inhoud || next.type || 'Volgend onderdeel',
+    time: target,
+    countdown,
+    details: `${next.type || 'Segment'} · ${next.inhoud || 'Geen titel'}`
+  };
+}
+const NEWS_SOURCES = [
+  { id:'loco-oldebroek', name:'Loco Media Groep · Oldebroek', landing:'https://locomediagroep.nl/filter/gemeente:oldebroek', urls:['https://locomediagroep.nl/feed/','https://locomediagroep.nl/wp-json/wp/v2/posts?per_page=8'] },
+  { id:'loco-elburg', name:'Loco Media Groep · Elburg', landing:'https://locomediagroep.nl/filter/gemeente:Elburg', urls:['https://locomediagroep.nl/feed/','https://locomediagroep.nl/wp-json/wp/v2/posts?per_page=8'] },
+  { id:'vrmg', name:'VRMG · Noord-West Veluwe', landing:'https://vrmg.nl/', urls:['https://vrmg.nl/feed/','https://vrmg.nl/wp-json/wp/v2/posts?per_page=8'] }
+];
+const NEWS_FALLBACK_ARTICLES=[
+  {id:'oldebroek-thomas',source:'Loco Media Groep · Oldebroek',title:'Thomas fietst €3.350 bij elkaar voor Zorgboerderij Benjamin',link:'https://locomediagroep.nl/thomas-fietst-eur3350-bij-elkaar-voor-zorgboerderij-benjamin'},
+  {id:'oldebroek-wolf',source:'Loco Media Groep · Oldebroek',title:'Te weinig wolfwerende maatregelen? Dan straks minder schadevergoeding bij aanvallen',link:'https://locomediagroep.nl/te-weinig-wolfwerende-maatregelen-dan-straks-minder-schadevergoeding-bij-aanvallen'},
+  {id:'oldebroek-sport',source:'Loco Media Groep · Oldebroek',title:'Ruim honderd kinderen maken kennis met verschillende sporten',link:'https://locomediagroep.nl/ruim-honder-kinderen-maken-kennis-met-verschillende-sporten'},
+  {id:'elburg-wmo',source:'Loco Media Groep · Elburg',title:'Nieuwe leveranciers voor Wmo-hulpmiddelen vanaf 1 oktober',link:'https://locomediagroep.nl/nieuwe-leveranciers-voor-wmo-hulpmiddelen-vanaf-1-oktober'},
+  {id:'elburg-owios',source:'Loco Media Groep · Elburg',title:'OWIOS vervolgt de competitie met de derby tegen DSV ‘61',link:'https://locomediagroep.nl/owios-vervolgt-de-competitie-met-de-derby-tegen-dsv-61'},
+  {id:'elburg-vsco',source:'Loco Media Groep · Elburg',title:'VSCO’61 ontvangt SV Twello op de Heughte',link:'https://locomediagroep.nl/vsco61-ontvangt-sv-twello-op-de-heughte'},
+  {id:'vrmg-trein',source:'VRMG · Noord-West Veluwe',title:'Treinverkeer plat door dodelijke aanrijding',link:'https://vrmg.nl/treinverkeer-plat-door-dodelijke-aanrijding'},
+  {id:'vrmg-heidehoning',source:'VRMG · Noord-West Veluwe',title:'Zo komt de Wezepsche heidehoning uit de raat: ‘Geen topjaar’',link:'https://vrmg.nl/zo-komt-de-wezepsche-heidehoning-uit-de-raat-geen-topjaar'},
+  {id:'vrmg-oekraine',source:'VRMG · Noord-West Veluwe',title:'111 kilometer voor Oekraïense militairen: Hans loopt mee',link:'https://vrmg.nl/111-kilometer-voor-oekraiense-militairen-hans-26-loopt-mee-met-111-pantsergeniecompagnie'}
+].map(article=>({...article,date:new Date().toISOString()}));
+function escapeNewsText(value){
+  return String(value||'').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+function getNewsConfig(){
+  const config=load('km_news_config',{selected:[]});
+  return {selected:Array.isArray(config.selected)?config.selected:[]};
+}
+function parseNewsResponse(text, source){
+  const xml=new DOMParser().parseFromString(text,'text/xml');
+  const items=[...xml.querySelectorAll('item, entry')];
+  return items.slice(0,8).map((item,index)=>{
+    const title=item.querySelector('title')?.textContent?.trim()||'';
+    const link=item.querySelector('link')?.getAttribute('href')||item.querySelector('link')?.textContent?.trim()||'';
+    const date=item.querySelector('pubDate, published, updated')?.textContent?.trim()||'';
+    return {id:`${source.id}-${index}-${btoa(unescape(encodeURIComponent(title))).slice(0,16)}`,source:source.name,title,link,date};
+  }).filter(item=>item.title);
+}
+async function fetchNewsSource(source){
+  for(const url of source.urls){
+    try{
+      const response=await fetch(url,{mode:'cors'});
+      if(!response.ok) continue;
+      const text=await response.text();
+      if(text.trim().startsWith('<')){
+        const items=parseNewsResponse(text,source);
+        if(items.length) return items;
+      }else{
+        const data=JSON.parse(text);
+        if(Array.isArray(data)) return data.slice(0,8).map((item,index)=>({id:`${source.id}-${index}-${item.id||index}`,source:source.name,title:(item.title?.rendered||item.title||'').replace(/<[^>]*>/g,''),link:item.link||'',date:item.date||''})).filter(item=>item.title);
+      }
+    }catch(error){ continue; }
+  }
+  return [];
+}
+async function refreshNewsArticles(showMessage=false){
+  const results=(await Promise.all(NEWS_SOURCES.map(source=>fetchNewsSource(source).then(items=>items.slice(0,3))))).flat();
+  if(results.length) save('km_news_articles',results);
+  else {
+    const existing=load('km_news_articles',[]);
+    const manual=existing.filter(article=>String(article.id).startsWith('manual-'));
+    save('km_news_articles',[...NEWS_FALLBACK_ARTICLES,...manual]);
+  }
+  if(showMessage) toast(results.length ? `${results.length} nieuwsartikelen geladen` : 'Geen automatische artikelen gevonden; de bronpagina\'s blijven beschikbaar');
+  renderAdminNewsEditor();
+  return results.length ? results : NEWS_FALLBACK_ARTICLES;
+}
+function getSelectedNewsArticles(){
+  const articles=load('km_news_articles',[]);
+  const selected=getNewsConfig().selected;
+  const ordered=selected.map(id=>articles.find(article=>article.id===id)).filter(Boolean);
+  return ordered.length ? ordered : articles.slice(0,6);
+}
+function renderAdminNewsEditor(targetId){
+  const target=targetId ? document.getElementById(targetId) : document.getElementById('adminNewsForm');
+  if(!target)return;
+  const articles=load('km_news_articles',[]);
+  const selected=getNewsConfig().selected;
+  const selectedIds=selected.length ? selected : articles.slice(0,6).map(article=>article.id);
+  const ordered=[...selectedIds.map(id=>articles.find(article=>article.id===id)).filter(Boolean),...articles.filter(article=>!selectedIds.includes(article.id))];
+  target.innerHTML=`${ordered.length ? ordered.map(article=>`<label draggable="true" data-news-id="${escapeNewsText(article.id)}" style="display:flex; gap:10px; align-items:flex-start; padding:9px; margin-bottom:6px; background:var(--panel2); border:1px solid var(--border); border-radius:8px; cursor:grab;"><input type="checkbox" ${selectedIds.includes(article.id)?'checked':''} style="width:auto; margin-top:3px;"><span><strong>${escapeNewsText(article.title)}</strong><small style="display:block; color:var(--grey); margin-top:3px;">${escapeNewsText(article.source)}</small></span></label>`).join('') : '<div class="empty">Nog geen artikelen geladen. Voeg hieronder zelf een artikel toe.</div>'}${target.id==='liveNewsManager' ? `<div class="field-grid" style="margin-top:14px;"><input id="liveNewsTitle" placeholder="Titel van nieuwsartikel"><input id="liveNewsSource" placeholder="Bron, bijvoorbeeld Oldebroek Nieuws"><input id="liveNewsLink" placeholder="Link naar artikel"></div><button class="btn small" onclick="addManualNewsArticle()">+ Artikel toevoegen</button>` : ''}<button class="btn secondary small" style="margin-top:10px;" onclick="${target.id==='liveNewsManager' ? "saveNewsSelection('liveNewsManager')" : 'saveNewsSelection()'}">✓ Nieuwsselectie opslaan</button>`;
+  let dragged=null;
+  target.querySelectorAll('[data-news-id]').forEach(row=>{
+    row.addEventListener('dragstart',()=>{dragged=row; row.style.opacity='.45';});
+    row.addEventListener('dragend',()=>{row.style.opacity='1'; dragged=null;});
+    row.addEventListener('dragover',event=>event.preventDefault());
+    row.addEventListener('drop',event=>{event.preventDefault(); if(dragged&&dragged!==row) row.parentNode.insertBefore(dragged,row);});
+  });
+}
+function saveNewsSelection(targetId){
+  if(!requireAdmin()) return;
+  const target=document.getElementById(targetId||'adminNewsForm');
+  if(!target)return;
+  const selected=[];
+  target.querySelectorAll('[data-news-id]').forEach(row=>{ if(row.querySelector('input[type="checkbox"]')?.checked) selected.push(row.dataset.newsId); });
+  save('km_news_config',{selected});
+  renderLiveNewsManager();
+  if(document.getElementById('liveNewsFeed')) renderLiveNewsFeed(getSelectedNewsArticles());
+  toast('Nieuwsselectie opgeslagen');
+}
+function addManualNewsArticle(){
+  if(!requireAdmin()) return;
+  const title=document.getElementById('liveNewsTitle')?.value.trim();
+  if(!title){toast('Vul minimaal een titel in'); return;}
+  const articles=load('km_news_articles',[]);
+  const article={id:`manual-${uid()}`,source:document.getElementById('liveNewsSource')?.value.trim()||'Eigen regionieuws',title,link:document.getElementById('liveNewsLink')?.value.trim()||'',date:new Date().toISOString()};
+  articles.unshift(article); save('km_news_articles',articles);
+  const config=getNewsConfig(); config.selected=[article.id,...config.selected]; save('km_news_config',config);
+  renderLiveNewsManager(); renderLiveNewsFeed(getSelectedNewsArticles()); toast('Nieuwsartikel toegevoegd');
+}
+function renderLiveNewsManager(){
+  const target=document.getElementById('liveNewsManager');
+  if(!target)return;
+  if(!isAdminLoggedIn()){
+    target.innerHTML='<button class="btn secondary small" onclick="openAdminGate()">🔒 Regionieuws beheren</button>';
+    return;
+  }
+  target.innerHTML='<div style="font-size:12px; color:var(--green2); font-weight:700; margin-bottom:8px;">BEHEER REGIONIEUWS</div>';
+  renderAdminNewsEditor('liveNewsManager');
+}
+function renderLiveNewsFeed(items){
+  const newsTarget=document.getElementById('liveNewsFeed');
+  if(!newsTarget)return;
+  newsTarget.innerHTML=items.length ? items.map((item,idx)=>`<div style="padding:10px 0; border-bottom:1px solid var(--border);"><div style="font-size:12px; color:var(--green2); font-weight:700; margin-bottom:4px;">${escapeNewsText(item.source)} · ARTIKEL ${idx+1}</div>${item.link?`<a href="${escapeNewsText(item.link)}" target="_blank" rel="noopener" style="line-height:1.5; color:var(--white);">${escapeNewsText(item.title)}</a>`:`<div style="line-height:1.5; color:var(--white);">${escapeNewsText(item.title)}</div>`}</div>`).join('') : '<div style="color:var(--grey);">Nog geen regionieuws geselecteerd. Log in om zelf artikelen toe te voegen.</div>';
+}
+async function loadRegionNews(){
+  const cached=load('km_news_articles',[]);
+  const fresh=await refreshNewsArticles();
+  if(fresh.length || cached.length) return getSelectedNewsArticles();
+  save('km_news_articles',NEWS_FALLBACK_ARTICLES);
+  if(!getNewsConfig().selected.length) save('km_news_config',{selected:NEWS_FALLBACK_ARTICLES.map(article=>article.id)});
+  return NEWS_FALLBACK_ARTICLES;
+}
+async function loadOldebroekWeather(){
+  const target=document.getElementById('liveWeather');
+  if(!target)return;
+  try{
+    const response=await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.4458&longitude=5.9015&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=Europe%2FAmsterdam');
+    const data=await response.json();
+    const current=data.current;
+    const descriptions={0:'Helder',1:'Overwegend helder',2:'Half bewolkt',3:'Bewolkt',45:'Mistig',51:'Lichte motregen',61:'Lichte regen',63:'Regen',65:'Zware regen',71:'Lichte sneeuw',80:'Regenbuien',95:'Onweer'};
+    const temperature=Math.round(current.temperature_2m);
+    const feelsLike=Math.round(current.apparent_temperature);
+    const wind=Math.round(current.wind_speed_10m);
+    const description=descriptions[current.weather_code]||'wisselvallig weer';
+    const sentenceTwo=temperature >= 20 ? 'Het is aangenaam warm buiten.' : temperature <= 5 ? 'Het is fris buiten, dus een jas is verstandig.' : 'De temperatuur is gematigd.';
+    const sentenceThree=wind >= 30 ? 'Er staat daarbij een stevige wind.' : wind >= 15 ? 'Er staat een merkbare wind.' : 'Er staat weinig wind.';
+    target.innerHTML=`<div style="display:flex; gap:22px; flex-wrap:wrap; align-items:baseline;"><strong style="font-size:34px;">${temperature}°C</strong><span>${description}</span><span>Gevoelstemperatuur ${feelsLike}°C</span><span>Wind ${wind} km/u</span></div><div style="line-height:1.65; color:var(--white); margin-top:14px;"><p>In Oldebroek is het momenteel ${description.toLowerCase()} met een temperatuur van ${temperature} graden.</p><p>${sentenceTwo} De gevoelstemperatuur ligt rond ${feelsLike} graden.</p><p>${sentenceThree}</p></div><div style="color:var(--grey); font-size:12px; margin-top:8px;">Gemeente Oldebroek · actuele meting · <a href="https://www.weeronline.nl/weerbericht-nederland" target="_blank" rel="noopener" style="color:var(--green2);">Weeronline</a></div>`;
+  }catch(error){ target.innerHTML='<div style="color:var(--grey);">Weer tijdelijk niet beschikbaar. <a href="https://www.weeronline.nl/weerbericht-nederland" target="_blank" rel="noopener" style="color:var(--green2);">Open Weeronline voor Nederland</a>.</div>'; }
+}
+function renderLiveInfoPage(){
+  const timeTarget = document.getElementById('liveTimeDisplay');
+  const hourCountdownTarget = document.getElementById('liveHourCountdown');
+  const nextTarget = document.getElementById('liveNextBlock');
+  const newsTarget = document.getElementById('liveNewsFeed');
+  scheduleHourlyNewsRefresh();
+
+  const updateCountdown = () => {
+    const next = getNearestNextBlock();
+    if (!nextTarget) return;
+    if (next.countdown !== null) {
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const [h, m] = String(next.time).split(':').map(Number);
+      const targetMinutes = h * 60 + m;
+      let diff = targetMinutes - currentMinutes;
+      if (diff <= 0) diff += 24 * 60;
+      const totalSeconds = diff * 60 + (60 - now.getSeconds());
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      nextTarget.innerHTML = `
+        <div style="font-size:36px; font-weight:800; color:var(--green2);">${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}</div>
+        <div style="margin-top:8px; color:var(--grey);">${next.label}</div>
+        <div style="margin-top:4px; font-size:13px; color:var(--white);">${next.time ? 'Start om ' + next.time : ''}</div>
+        <div style="margin-top:6px; font-size:12px; color:var(--grey);">${next.details}</div>`;
+    } else {
+      nextTarget.innerHTML = '<div style="color:var(--grey);">'+next.details+'</div>';
+    }
+  };
+
+  if (timeTarget) {
+    const updateClock = () => {
+      const now = new Date();
+      timeTarget.textContent = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      if(hourCountdownTarget){
+        const target = new Date(now);
+        target.setMinutes(59,41,0);
+        if(target <= now) target.setHours(target.getHours()+1,59,41,0);
+        const remaining=Math.max(0,Math.floor((target-now)/1000));
+        const minutes=Math.floor(remaining/60);
+        const seconds=remaining%60;
+        hourCountdownTarget.textContent=`Einde uur: ${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+      }
+    };
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  if (newsTarget) {
+    loadRegionNews().then(items => {
+      renderLiveNewsFeed(items);
+      renderLiveNewsManager();
+    }).catch(() => {
+      renderLiveNewsFeed(getSelectedNewsArticles());
+      renderLiveNewsManager();
+    });
+  }
+  loadOldebroekWeather();
+}
+
+/* ---------- FAX ---------- */
+const FAX_CATS=['Alles','Radio','Presentatie','Muziek','Productie','Social media','Techniek','Draaiboeken','Veelgestelde vragen'];
+let faxActiveCat='Alles';
+function renderFax(){
+  document.getElementById('faxCats').innerHTML = FAX_CATS.map(c=>`<div class="fax-cat ${c===faxActiveCat?'active':''}" onclick="setFaxCat('${c}')">${c}</div>`).join('');
+  const q=(document.getElementById('faxSearch').value||'').toLowerCase();
+  let items=load('km_fax',[]);
+  if(faxActiveCat!=='Alles') items=items.filter(i=>i.cat===faxActiveCat);
+  if(q) items=items.filter(i=>(i.q+i.a).toLowerCase().includes(q));
+  document.getElementById('faxAccordion').innerHTML = items.map(i=>`
+    <div class="acc-item" id="acc-${i.id}">
+      <div class="acc-q" onclick="toggleAcc('${i.id}')"><span>${i.fav?'⭐ ':''}${i.q}</span><span>${i.cat}</span></div>
+      <div class="acc-a"><div class="acc-a-in">${i.a}
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button class="btn secondary small" onclick="event.stopPropagation(); toggleFav('${i.id}')">${i.fav?'★ Favoriet':'☆ Favoriet maken'}</button>
+        </div>
+      </div></div>
+    </div>`).join('') || '<div class="empty">Geen vragen gevonden.</div>';
+}
+function setFaxCat(c){faxActiveCat=c; renderFax();}
+function toggleAcc(id){document.getElementById('acc-'+id).classList.toggle('open');}
+function toggleFav(id){if(!requireAdmin()) return; const items=load('km_fax',[]); const it=items.find(x=>x.id===id); if(!it){ return; } it.fav=!it.fav; save('km_fax',items); renderFax();}
+function openFaxModal(){if(!isAdminLoggedIn()){ openAdminGate(); return; } document.getElementById('faxModalBg').classList.add('show');}
+function closeFaxModal(){document.getElementById('faxModalBg').classList.remove('show');}
+function saveFax(){
+  if(!isAdminLoggedIn()){
+    openAdminGate();
+    return;
+  }
+  const q=document.getElementById('faxNewQ').value.trim(); if(!q){toast('Vul een vraag in'); return;}
+  const items=load('km_fax',[]);
+  items.push({id:uid(), cat:document.getElementById('faxNewCat').value, q, a:document.getElementById('faxNewA').value, fav:false});
+  save('km_fax',items);
+  document.getElementById('faxNewQ').value=''; document.getElementById('faxNewA').value='';
+  closeFaxModal(); renderFax(); toast('Vraag toegevoegd');
+}
+
+/* ---------- INFORMATIE ---------- */
+let infoActive='KantineMedia';
+function renderInfo(){
+  const info=load('km_info',{});
+  const query=(document.getElementById('infoSearch')?.value||'').trim().toLowerCase();
+  const keys=Object.keys(info);
+  const filteredKeys=keys.filter(k=>!query || `${k} ${info[k]||''}`.toLowerCase().includes(query));
+  if(!filteredKeys.includes(infoActive)) infoActive=filteredKeys[0]||keys[0]||'';
+  document.getElementById('infoTabs').innerHTML = filteredKeys.length
+    ? filteredKeys.map(k=>`<button class="info-tab ${k===infoActive?'active':''}" onclick="setInfoTab('${k}')">${k}</button>`).join('')
+    : '<div class="empty">Geen informatie gevonden.</div>';
+  document.getElementById('infoContent').innerHTML = `
+    <h3>${infoActive}</h3>
+    <p style="color:var(--grey); line-height:1.6; margin-top:12px;">${info[infoActive]||''}</p>`;
+}
+function setInfoTab(k){infoActive=k; renderInfo();}
+
+/* ---------- BEHEER ---------- */
+function renderAdminPage(){
+  const dashboard=getDashboardStatsConfig();
+  const info=load('km_info',{});
+  const meldingen=getDashboardMeldingen();
+  const guest=getGuestConfig();
+  const activeRole=localStorage.getItem('km_role')||'Beheerder';
+  document.getElementById('adminDashboardForm').innerHTML = dashboard.map((item,index)=>`
+    <div class="field-grid" style="margin-bottom:10px;">
+      <div class="field"><label>${item.lbl} label</label><input value="${String(item.lbl).replace(/"/g,'&quot;')}" data-admin-dashboard-index="${index}" data-admin-dashboard-field="lbl"></div>
+      <div class="field"><label>Waarde</label><input value="${String(item.val).replace(/"/g,'&quot;')}" data-admin-dashboard-index="${index}" data-admin-dashboard-field="val"></div>
+      <div class="field"><label>Verschil</label><input value="${String(item.d).replace(/"/g,'&quot;')}" data-admin-dashboard-index="${index}" data-admin-dashboard-field="d"></div>
+    </div>`).join('');
+
+  document.getElementById('adminMeldingen').value = meldingen.join('\n');
+  document.getElementById('adminRoleSelect').value = activeRole;
+  document.getElementById('adminInfoForm').innerHTML = Object.keys(info).map(key=>`
+    <div class="field"><label>${key}</label><textarea rows="3" data-admin-info-key="${key}">${String(info[key]).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>`).join('');
+  document.getElementById('adminGuestForm').innerHTML = `
+    <div class="field-grid">
+      <div class="field"><label>Paginatitel</label><input id="adminGuestPageTitle" value="${String(guest.pageTitle||'').replace(/"/g,'&quot;')}"></div>
+      <div class="field"><label>Intro-label</label><input id="adminGuestKicker" value="${String(guest.kicker||'').replace(/"/g,'&quot;')}"></div>
+    </div>
+    <div class="field"><label>Naam</label><input id="adminGuestName" value="${String(guest.name||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Optreden / rol</label><input id="adminGuestRole" value="${String(guest.role||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Programma</label><input id="adminGuestProgram" value="${String(guest.program||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Foto URL</label><input id="adminGuestPhoto" value="${String(guest.photo||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Welkomsttekst</label><textarea id="adminGuestMessage" rows="4">${String(guest.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
+    <div class="field"><label>Badges, één per regel</label><textarea id="adminGuestBadges" rows="3">${guest.badges.join('\n')}</textarea></div>
+    <div class="field"><label>Planning, één per regel in formaat: tijd | omschrijving</label><textarea id="adminGuestSchedule" rows="3">${guest.schedule.map(item=>`${item.time} | ${item.label}`).join('\n')}</textarea></div>
+    <div class="field"><label>Kerncijfers, één per regel in formaat: waarde | omschrijving</label><textarea id="adminGuestFacts" rows="3">${guest.facts.map(item=>`${item.value} | ${item.label}`).join('\n')}</textarea></div>
+    <div class="field"><label>Titel voorbereiding</label><input id="adminGuestPrepTitle" value="${String(guest.prepTitle||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Checklist, één punt per regel</label><textarea id="adminGuestPrepItems" rows="4">${guest.prepItems.join('\n')}</textarea></div>
+    <div class="field-grid">
+      <div class="field"><label>Titel gesprekstarter</label><input id="adminGuestPromptTitle" value="${String(guest.promptTitle||'').replace(/"/g,'&quot;')}"></div>
+      <div class="field"><label>Label gesprekstarter</label><input id="adminGuestPromptLabel" value="${String(guest.promptLabel||'').replace(/"/g,'&quot;')}"></div>
+    </div>
+    <div class="field"><label>Gesprekstarters, één per regel</label><textarea id="adminGuestPrompts" rows="4">${guest.prompts.join('\n')}</textarea></div>
+    <div class="field"><label>Titel praktische informatie</label><input id="adminGuestPracticalTitle" value="${String(guest.practicalTitle||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Praktische blokken, één per regel in formaat: titel | regel 1 | regel 2</label><textarea id="adminGuestPractical" rows="4">${guest.practical.map(item=>`${item.title} | ${item.lines.join(' | ')}`).join('\n')}</textarea></div>`;
+  renderAdminNewsEditor();
+
+}
+function saveAdminData(){
+  if(!requireAdmin()) return;
+  const dashboard=[];
+  const totalDashboardRows = document.querySelectorAll('[data-admin-dashboard-index]').length / 3;
+  for(let i=0;i<totalDashboardRows;i++){
+    const lbl = document.querySelector(`[data-admin-dashboard-index="${i}"][data-admin-dashboard-field="lbl"]`).value.trim() || 'Statistiek';
+    const val = document.querySelector(`[data-admin-dashboard-index="${i}"][data-admin-dashboard-field="val"]`).value.trim() || '0';
+    const d = document.querySelector(`[data-admin-dashboard-index="${i}"][data-admin-dashboard-field="d"]`).value.trim() || '0';
+    dashboard.push({
+      ic: DEFAULT_DASHBOARD_STATS[i]?.ic || '📌',
+      lbl,
+      val,
+      d
+    });
+  }
+  save('km_dashboard_stats', dashboard);
+
+  const meldingen = document.getElementById('adminMeldingen').value.split('\n').map(v=>v.trim()).filter(Boolean);
+  save('km_meldingen', meldingen.length ? meldingen : ['📢 Geen belangrijke informatie.']);
+
+  const info = {};
+  document.querySelectorAll('[data-admin-info-key]').forEach(el => {
+    info[el.dataset.adminInfoKey] = el.value;
+  });
+  save('km_info', info);
+
+  const guestLines = id => document.getElementById(id).value.split('\n').map(value=>value.trim()).filter(Boolean);
+  const guestPairs = (id, minimumParts) => guestLines(id).map(line=>line.split('|').map(value=>value.trim())).filter(parts=>parts.length>=minimumParts);
+  const guestConfig = {
+    pageTitle: document.getElementById('adminGuestPageTitle').value.trim() || 'Gast welkom',
+    kicker: document.getElementById('adminGuestKicker').value.trim() || 'Vandaag in de studio',
+    name: document.getElementById('adminGuestName') ? document.getElementById('adminGuestName').value.trim() || 'Ariane de Vries' : 'Ariane de Vries',
+    role: document.getElementById('adminGuestRole') ? document.getElementById('adminGuestRole').value.trim() || 'Zangeres / singer-songwriter' : 'Zangeres / singer-songwriter',
+    program: document.getElementById('adminGuestProgram') ? document.getElementById('adminGuestProgram').value.trim() || "Gert-Jan's Kantine" : "Gert-Jan's Kantine",
+    photo: document.getElementById('adminGuestPhoto') ? document.getElementById('adminGuestPhoto').value.trim() || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80' : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80',
+    message: document.getElementById('adminGuestMessage') ? document.getElementById('adminGuestMessage').value.trim() || 'Welkom bij KantineMedia! We zijn blij dat je hier bent.' : 'Welkom bij KantineMedia! We zijn blij dat je hier bent.',
+    badges: guestLines('adminGuestBadges'),
+    schedule: guestPairs('adminGuestSchedule', 2).map(parts=>({time:parts[0], label:parts.slice(1).join(' | ')})),
+    facts: guestPairs('adminGuestFacts', 2).map(parts=>({value:parts[0], label:parts.slice(1).join(' | ')})),
+    prepTitle: document.getElementById('adminGuestPrepTitle').value.trim() || 'Jouw voorbereiding',
+    prepItems: guestLines('adminGuestPrepItems'),
+    promptTitle: document.getElementById('adminGuestPromptTitle').value.trim() || 'Gesprekstarter',
+    promptLabel: document.getElementById('adminGuestPromptLabel').value.trim() || 'Voor in de uitzending',
+    prompts: guestLines('adminGuestPrompts'),
+    practicalTitle: document.getElementById('adminGuestPracticalTitle').value.trim() || 'Praktisch in de studio',
+    practical: guestPairs('adminGuestPractical', 2).map(parts=>({title:parts[0], lines:parts.slice(1)}))
+  };
+  save('km_guest', guestConfig);
+
+  const selectedNews=[];
+  document.querySelectorAll('#adminNewsForm [data-news-id]').forEach(row=>{
+    if(row.querySelector('input[type="checkbox"]')?.checked) selectedNews.push(row.dataset.newsId);
+  });
+  save('km_news_config',{selected:selectedNews});
+
+  localStorage.setItem('km_role', document.getElementById('adminRoleSelect').value);
+  document.getElementById('roleSelect').value = document.getElementById('adminRoleSelect').value;
+  renderDashboard();
+  renderInfo();
+  renderGuestPage();
+  toast('Alle bewerkingsinstellingen opgeslagen');
+}
+
+/* ---------- MEDEWERKERS ---------- */
+function renderEmployees(){
+  const emp=load('km_employees',[]);
+  document.getElementById('empGrid').innerHTML = emp.map(e=>`
+    <div class="emp-card">
+      <div class="emp-ava">${e.naam.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+      <h4>${e.naam}</h4><div class="role">${e.functie}</div>
+      <div class="prog">🎙️ ${e.programma}</div>
+      <div class="prog">${e.contact}</div>
+      <div style="margin-top:10px;">${e.status==='Actief'?'<span class="badge green">Actief</span>':'<span class="badge amber">Afwezig</span>'}</div>
+    </div>`).join('');
+}
+
+/* ---------- GASTEN ---------- */
+function getGuestConfig(){
+  const defaultGuest = {
+    pageTitle: 'Gast welkom',
+    kicker: 'Vandaag in de studio',
+    name: 'Ariane de Vries',
+    role: 'Zangeres / singer-songwriter',
+    program: "Gert-Jan's Kantine",
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80',
+    message: 'Welkom bij KantineMedia! We zijn blij dat je hier bent en kijken uit naar een mooie, energieke uitzending samen.',
+    badges: ['🎙️ Live interview', '🎵 1 liedje per kwartier', '📍 Studio KantineMedia'],
+    schedule: [{time:'19:15',label:'Optreden 1'}, {time:'19:30',label:'Optreden 2'}, {time:'19:45',label:'Optreden 3'}],
+    facts: [{value:'3',label:'momenten in jouw uitzending'}, {value:'15 min',label:'per optreden of gesprek'}, {value:'1 liedje',label:'per kwartier in de show'}],
+    prepTitle: 'Jouw voorbereiding',
+    prepItems: ['Ik heb mijn favoriete nummer en onderwerp paraat.', 'Ik weet welke naam en rol ik on air wil gebruiken.', 'Ik heb mijn telefoon op stil gezet.', 'Ik heb water en een rustige ademhaling bij de hand.'],
+    promptTitle: 'Gesprekstarter',
+    promptLabel: 'Voor in de uitzending',
+    prompts: ['Wat wil je dat mensen onthouden nadat ze jouw optreden hebben gehoord?', 'Welk moment uit jouw week verdient volgens jou een groter publiek?', 'Welke vraag krijg je vaak, maar wordt bijna nooit goed gesteld?', 'Wat geeft jou vandaag de meeste energie?'],
+    practicalTitle: 'Praktisch in de studio',
+    practical: [{title:'Waar',lines:['Studio KantineMedia','Hoofdingang, tweede verdieping']}, {title:'Contact',lines:['Presentator: achter de microfoon','Productie: via de regie']}, {title:'On air',lines:['Wacht op het rode lampje','Praat dicht bij de microfoon']}]
+  };
+  const saved = load('km_guest', null);
+  if (saved && typeof saved === 'object') {
+    return {...defaultGuest, ...saved};
+  }
+  save('km_guest', defaultGuest);
+  return defaultGuest;
+}
+function escapeGuestText(value){
+  return String(value ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function renderGuestPage(){
+  const guest = getGuestConfig();
+  const guestPageTitle = document.getElementById('guestPageTitle');
+  const guestKicker = document.getElementById('guestKicker');
+  const guestName = document.getElementById('guestName');
+  const guestMessage = document.getElementById('guestMessage');
+  const guestPhoto = document.getElementById('guestPhoto');
+  const guestMetaName = document.getElementById('guestMetaName');
+  const guestMetaRole = document.getElementById('guestMetaRole');
+  const guestMetaProgram = document.getElementById('guestMetaProgram');
+  if (guestPageTitle) guestPageTitle.textContent = guest.pageTitle;
+  if (guestKicker) guestKicker.textContent = guest.kicker;
+  if (guestName) guestName.textContent = guest.name;
+  if (guestMessage) guestMessage.textContent = guest.message;
+  if (guestPhoto) guestPhoto.src = guest.photo;
+  if (guestMetaName) guestMetaName.textContent = guest.name;
+  if (guestMetaRole) guestMetaRole.textContent = guest.role;
+  if (guestMetaProgram) guestMetaProgram.textContent = guest.program;
+  document.getElementById('guestBadges').innerHTML = guest.badges.map(badge=>`<div class="guest-badge">${escapeGuestText(badge)}</div>`).join('');
+  document.getElementById('guestSchedule').innerHTML = guest.schedule.map(item=>`<div class="guest-slot"><strong>${escapeGuestText(item.time)}</strong><span>${escapeGuestText(item.label)}</span></div>`).join('');
+  document.getElementById('guestFacts').innerHTML = guest.facts.map(item=>`<div class="guest-fact"><strong>${escapeGuestText(item.value)}</strong><span>${escapeGuestText(item.label)}</span></div>`).join('');
+  document.getElementById('guestPrepTitle').textContent = guest.prepTitle;
+  document.getElementById('guestChecklist').innerHTML = guest.prepItems.map(item=>`<label class="guest-check"><input type="checkbox" onchange="updateGuestProgress()"><span>${escapeGuestText(item)}</span></label>`).join('');
+  document.getElementById('guestPromptTitle').textContent = guest.promptTitle;
+  document.getElementById('guestPromptLabel').textContent = guest.promptLabel;
+  guestPrompts = guest.prompts;
+  guestPromptIndex = 0;
+  document.getElementById('guestPrompt').textContent = guestPrompts[0] || '';
+  document.getElementById('guestPracticalTitle').textContent = guest.practicalTitle;
+  document.getElementById('guestPractical').innerHTML = guest.practical.map(item=>`<div><label>${escapeGuestText(item.title)}</label><p style="color:var(--grey); font-size:13px; line-height:1.5;">${item.lines.map(line=>escapeGuestText(line)).join('<br>')}</p></div>`).join('');
+  updateGuestProgress();
+}
+let guestPrompts = [
+  'Wat wil je dat mensen onthouden nadat ze jouw optreden hebben gehoord?',
+  'Welk moment uit jouw week verdient volgens jou een groter publiek?',
+  'Welke vraag krijg je vaak, maar wordt bijna nooit goed gesteld?',
+  'Wat geeft jou vandaag de meeste energie?'
+];
+let guestPromptIndex = 0;
+function nextGuestPrompt(){
+  guestPromptIndex = (guestPromptIndex + 1) % guestPrompts.length;
+  const prompt = document.getElementById('guestPrompt');
+  if(prompt) prompt.textContent = guestPrompts[guestPromptIndex];
+}
+function updateGuestProgress(){
+  const checks = [...document.querySelectorAll('#guestPrep input[type="checkbox"]')];
+  if(!checks.length) return;
+  const completed = checks.filter(check => check.checked).length;
+  const label = document.getElementById('guestProgressLabel');
+  const bar = document.getElementById('guestProgressBar');
+  if(label) label.textContent = `${completed}/${checks.length} klaar`;
+  if(bar) bar.style.width = `${completed / checks.length * 100}%`;
+}
+
+/* ---------- WEEKEND AGENDA ---------- */
+const AGENDA_DAYS=[{id:'vrijdag', label:'Vrijdag', icon:'🎧'}, {id:'zaterdag', label:'Zaterdag', icon:'🎤'}];
+function loadAgenda(){
+  const existing=load('km_agenda',null);
+  if(existing) return existing;
+  const empty={};
+  AGENDA_DAYS.forEach(d=> empty[d.id]=[{time:'20:00',artist:''},{time:'21:00',artist:''},{time:'22:00',artist:''}]);
+  return empty;
+}
+let agendaData=loadAgenda();
+function renderAgenda(){
+  document.getElementById('agendaDays').innerHTML = AGENDA_DAYS.map(day=>{
+    const rows=agendaData[day.id]||[];
+    return `
+      <div class="day-card">
+        <h2>${day.icon} ${day.label}</h2>
+        <div class="artist-list">
+          ${rows.map((row,i)=>`
+            <div class="artist-row">
+              <input class="time" type="time" value="${row.time}" onchange="updateAgenda('${day.id}',${i},'time',this.value)">
+              <input type="text" placeholder="Naam artiest..." value="${(row.artist||'').replace(/"/g,'&quot;')}" onchange="updateAgenda('${day.id}',${i},'artist',this.value)">
+              <button class="icobtn" title="Verwijder" onclick="removeAgendaRow('${day.id}',${i})">✕</button>
+            </div>`).join('')}
+        </div>
+        <button class="add-btn" onclick="addAgendaRow('${day.id}')">+ Artiest toevoegen</button>
+        <button class="btn small" style="width:100%; margin-top:8px; justify-content:center;" onclick="generateDraaiboekFromAgenda('${day.id}')">🎬 Maak draaiboek van ${day.label.toLowerCase()}</button>
+      </div>`;
+  }).join('');
+}
+function nextWeekday(targetDow){
+  const d=new Date(); const diff=(targetDow - d.getDay() + 7) % 7 || 7;
+  d.setDate(d.getDate()+diff);
+  return d.toISOString().slice(0,10);
+}
+function generateDraaiboekFromAgenda(dayId){
+  const rows=(agendaData[dayId]||[]).filter(r=>r.artist && r.artist.trim());
+  if(!rows.length){ toast('Vul eerst artiesten in bij ' + dayId); return; }
+  const dayInfo=AGENDA_DAYS.find(d=>d.id===dayId);
+  const dow = dayId==='vrijdag' ? 5 : 6;
+  const blocks=[{id:uid(), tijd:rows[0].time, type:'Jingle', inhoud:'Openingstune', muziek:'', opm:'Intro'}];
+  rows.forEach(r=> blocks.push({id:uid(), tijd:r.time, type:'Muziek', inhoud:r.artist, muziek:'🎵', opm:''}) );
+
+  const dbs=load('km_draaiboeken',[]);
+  const obj={
+    id:uid(), programma:dayInfo.label+' live sets', presentator:'', datum:nextWeekday(dow),
+    start:rows[0].time, eind:rows[rows.length-1].time, thema:'', gast:'', opm:'Automatisch aangemaakt vanuit Weekend Agenda',
+    blocks
+  };
+  dbs.push(obj); save('km_draaiboeken',dbs);
+  toast('Draaiboek aangemaakt en opgeslagen');
+  openDraaiboek(obj.id);
+}
+function updateAgenda(day,index,field,val){if(!requireAdmin()) return; agendaData[day][index][field]=val; save('km_agenda',agendaData); toast('Opgeslagen');}
+function removeAgendaRow(day,index){if(!requireAdmin()) return; agendaData[day].splice(index,1); save('km_agenda',agendaData); renderAgenda(); toast('Verwijderd');}
+function addAgendaRow(day){if(!requireAdmin()) return; agendaData[day].push({time:'22:00',artist:''}); save('km_agenda',agendaData); renderAgenda();}
+
+/* ---------- init ---------- */
+setInterval(updateDashboardClock, 1000);
+renderDashboard();
+</script>
+</body>
+</html>
