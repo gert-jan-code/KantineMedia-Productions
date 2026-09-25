@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0D1117; --panel:#161B22; --panel2:#1C2330; --green:#19C463; --green2:#35E07A;
+  --bg:#0D1117; --panel:#161B22; --panel2:#1C2330; --green:#046f51; --green2:#046f51;
   --white:#FFFFFF; --grey:#8B949E; --border:#242C3A; --red:#F85149; --amber:#E3B341; --blue:#58A6FF;
   box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
@@ -25,6 +25,16 @@ body{
   font-family:'Inter',sans-serif; background:var(--bg); color:var(--white);
   height:100%; display:flex; overflow:hidden;
 }
+body.light{
+  --bg:#F3F8F5; --panel:#FFFFFF; --panel2:#EAF3EF; --white:#17352B; --grey:#5D7068; --border:#C9DED4;
+  --red:#C83F3F; --amber:#A16A00; --blue:#1769AA;
+}
+body.light .login-shell{background:linear-gradient(135deg,rgba(243,248,245,.96),rgba(224,239,232,.95));}
+body.light .login-panel{background:rgba(255,255,255,.96);}
+body.light .login-field input,body.light input,body.light select,body.light textarea{background:#FFFFFF; color:var(--white);}
+body.light .navlink:hover{background:#E3F0EA;}
+body.light .track{background:linear-gradient(180deg,#F7FBF9,#EAF3EF);}
+body.light .guest-badge,body.light .guest-slot{background:rgba(255,255,255,.82);}
 ::-webkit-scrollbar{width:8px; height:8px;} ::-webkit-scrollbar-thumb{background:#2a3341; border-radius:4px;}
 .mono{font-family:'JetBrains Mono',monospace;}
 
@@ -35,7 +45,7 @@ body{
   transition:transform .2s ease; z-index:50;
 }
 .brand{display:flex; align-items:center; gap:10px; padding:6px 8px 22px 8px;}
-.brand-mark{width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,var(--green),var(--green2)); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:#04140a; flex-shrink:0;}
+.brand-mark{width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,.04); padding:4px; object-fit:contain; flex-shrink:0;}
 .brand-text .l1{font-weight:800; font-size:14.5px; line-height:1.15;}
 .brand-text .l2{font-weight:600; font-size:11.5px; color:var(--green2); letter-spacing:.03em;}
 nav{display:flex; flex-direction:column; gap:2px; flex:1;}
@@ -44,13 +54,46 @@ nav{display:flex; flex-direction:column; gap:2px; flex:1;}
   font-size:14px; font-weight:500; cursor:pointer; border:1px solid transparent; user-select:none;
 }
 .navlink:hover{background:#1c232f; color:var(--white);}
-.navlink.active{background:rgba(25,196,99,.12); color:var(--green2); border-color:rgba(25,196,99,.25);}
+.navlink.active{background:rgba(4,111,81,.18); color:var(--green2); border-color:rgba(4,111,81,.42);}
 .navlink .ic{font-size:16px; width:18px; text-align:center;}
 .navlink.admin-link{opacity:.42; font-size:12.5px; margin-top:8px; border-style:dashed;}
 .sidebar-foot{border-top:1px solid var(--border); padding-top:12px; margin-top:8px; font-size:11.5px; color:var(--grey);}
 .role-pill{display:inline-block; margin-top:6px; background:#1c232f; color:var(--green2); font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;}
 
 #menuBtn{display:none; position:fixed; top:calc(env(safe-area-inset-top,0px) + 14px); left:14px; z-index:60; background:var(--panel); border:1px solid var(--border); color:var(--white); width:38px; height:38px; border-radius:8px; font-size:16px; cursor:pointer;}
+
+#appShell{display:flex; width:100%; height:100%;}
+#appShell.hidden{display:none;}
+.login-shell{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, rgba(13,17,23,.96), rgba(12,22,23,.95)); z-index:200; padding:20px;}
+.login-shell.hidden{display:none;}
+.login-panel{width:min(980px,100%); min-height:620px; background:rgba(22,27,34,.94); border:1px solid var(--border); border-radius:24px; overflow:hidden; display:grid; grid-template-columns:1.05fr .95fr; box-shadow:0 32px 80px rgba(0,0,0,.45);}
+.login-visual{position:relative; background:linear-gradient(150deg, rgba(4,111,81,.24), rgba(88,166,255,.10)); padding:36px 32px; display:flex; flex-direction:column; justify-content:space-between; border-right:1px solid var(--border);}
+.login-visual::before{content:""; position:absolute; inset:0; background:radial-gradient(circle at top left, rgba(4,111,81,.28), transparent 40%), radial-gradient(circle at bottom right, rgba(88,166,255,.15), transparent 35%);}
+.login-brand, .login-copy{position:relative; z-index:1;}
+.login-logo{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.login-logo img{width:96px; height:96px; object-fit:contain; border-radius:18px; background:rgba(255,255,255,.04); padding:8px;}
+.login-logo-text{font-weight:800; letter-spacing:.08em; text-transform:uppercase; font-size:12px; color:var(--green2);}
+.login-hero-photo{position:relative; z-index:1; margin-top:20px; border-radius:22px; overflow:hidden; border:1px solid rgba(255,255,255,.08); box-shadow:0 18px 40px rgba(0,0,0,.25);}
+.login-hero-photo img{display:block; width:100%; height:280px; object-fit:contain; background:#046f51;}
+.login-copy h1{font-size:clamp(32px,4vw,52px); font-weight:800; line-height:1.04; letter-spacing:-.05em; margin-bottom:12px;}
+.login-copy p{color:var(--grey); font-size:15px; line-height:1.7; max-width:420px;}
+.login-form-panel{padding:42px 38px 32px; display:flex; align-items:center; justify-content:center;}
+.login-card{width:100%; max-width:380px;}
+.login-card h2{font-size:28px; font-weight:800; margin-bottom:8px;}
+.login-card p{color:var(--grey); font-size:13.5px; margin-bottom:24px;}
+.login-field{margin-bottom:16px;}
+.login-field label{display:block; margin-bottom:8px; color:var(--grey); font-weight:600; font-size:12px; letter-spacing:.04em; text-transform:uppercase;}
+.login-field input{background:#0c1218; border:1px solid var(--border); border-radius:12px; color:var(--white); padding:12px 14px; font-size:14px;}
+.login-password-wrap{position:relative;}
+.login-password-wrap input{padding-right:48px;}
+.password-toggle{position:absolute; top:50%; right:10px; transform:translateY(-50%); background:transparent; border:0; color:var(--grey); cursor:pointer; font-size:16px; padding:4px;}
+.password-toggle:hover{color:var(--white);}
+.login-field input:focus{border-color:var(--green); box-shadow:0 0 0 3px rgba(4,111,81,.2);}
+.login-error{display:none; background:rgba(248,81,73,.08); border:1px solid rgba(248,81,73,.35); color:#ff9d9d; padding:10px 12px; border-radius:10px; font-size:12.5px; margin-bottom:16px;}
+.login-error.show{display:block;}
+.login-submit{width:100%; padding:12px 14px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--green), var(--green2)); color:#04140a; font-weight:800; cursor:pointer; font-size:14px;}
+.login-footer{margin-top:18px; font-size:12px; color:var(--grey); text-align:center;}
+@media(max-width:840px){.login-panel{grid-template-columns:1fr;}.login-visual{border-right:none; border-bottom:1px solid var(--border);}.login-form-panel{padding:28px 20px 30px;}}
 
 /* Main */
 #main{flex:1; height:100%; overflow-y:auto; padding:28px 34px 60px;}
@@ -91,7 +134,7 @@ nav{display:flex; flex-direction:column; gap:2px; flex:1;}
 .list-row .t1{font-weight:600;}
 .list-row .t2{color:var(--grey); font-size:12px;}
 .badge{font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px;}
-.badge.green{background:rgba(25,196,99,.15); color:var(--green2);}
+.badge.green{background:rgba(4,111,81,.2); color:var(--green2);}
 .badge.amber{background:rgba(227,179,65,.15); color:var(--amber);}
 .badge.red{background:rgba(248,81,73,.15); color:var(--red);}
 .badge.grey{background:#232b38; color:var(--grey);}
@@ -125,6 +168,8 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 .block .block-time{font-variant-numeric:tabular-nums; letter-spacing:.03em;}
 .block .btnstack{display:flex; gap:4px;}
 .icobtn{background:transparent; border:1px solid var(--border); color:var(--grey); width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:12px;}
+.icobtn.skip{color:#ff7b7b; border-color:rgba(248,81,73,.35);}
+.icobtn.back{color:#7dd3fc; border-color:rgba(88,166,255,.35);}
 .icobtn:hover{border-color:var(--green); color:var(--green2);}
 
 /* Music search */
@@ -137,14 +182,12 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 .track .info b{font-size:13.5px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} 
 .track .info div{font-size:11.5px; color:var(--grey); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .track-actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
-.mini-player{width:150px; height:28px;}
-.mini-player audio{width:100%;}
 .track .btn{white-space:nowrap;}
 
 /* FAX accordion */
 .fax-cats{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
 .fax-cat{background:var(--panel2); border:1px solid var(--border); padding:7px 13px; border-radius:20px; font-size:12.5px; cursor:pointer; color:var(--grey);}
-.fax-cat.active{background:rgba(25,196,99,.15); color:var(--green2); border-color:rgba(25,196,99,.3);}
+.fax-cat.active{background:rgba(4,111,81,.2); color:var(--green2); border-color:rgba(4,111,81,.45);}
 .acc-item{border:1px solid var(--border); border-radius:10px; margin-bottom:8px; overflow:hidden; background:var(--panel);}
 .acc-q{padding:13px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:600; font-size:13.5px;}
 .acc-a{max-height:0; overflow:hidden; transition:max-height .18s ease;}
@@ -154,7 +197,7 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 /* Info */
 .info-tabs{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
 .info-tab{padding:8px 14px; border-radius:8px; background:var(--panel2); border:1px solid var(--border); font-size:13px; cursor:pointer; color:var(--grey);}
-.info-tab.active{background:rgba(25,196,99,.12); color:var(--green2); border-color:rgba(25,196,99,.3);}
+.info-tab.active{background:rgba(4,111,81,.18); color:var(--green2); border-color:rgba(4,111,81,.45);}
 
 /* Medewerkers */
 .emp-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px;}
@@ -177,8 +220,8 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 
 /* Guest welcome */
 .guest-shell{display:grid; grid-template-columns:1.2fr .8fr; gap:18px; align-items:stretch;}
-.guest-hero{background:linear-gradient(135deg, rgba(25,196,99,.18), rgba(88,166,255,.10)); border:1px solid var(--border); border-radius:18px; padding:26px; min-height:280px; display:flex; flex-direction:column; justify-content:center; position:relative; overflow:hidden;}
-.guest-hero::before{content:""; position:absolute; inset:auto -30px -60px auto; width:170px; height:170px; background:radial-gradient(circle, rgba(53,224,122,.65), transparent 60%);}
+.guest-hero{background:linear-gradient(135deg, rgba(4,111,81,.24), rgba(88,166,255,.10)); border:1px solid var(--border); border-radius:18px; padding:26px; min-height:280px; display:flex; flex-direction:column; justify-content:center; position:relative; overflow:hidden;}
+.guest-hero::before{content:""; position:absolute; inset:auto -30px -60px auto; width:170px; height:170px; background:radial-gradient(circle, rgba(4,111,81,.7), transparent 60%);}
 .guest-kicker{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:999px; width:fit-content; color:var(--green2);}
 .guest-name{font-size:clamp(32px,5vw,56px); font-weight:800; line-height:1; margin-top:16px; letter-spacing:-.04em;}
 .guest-sub{margin-top:14px; color:var(--grey); font-size:15px; max-width:620px; line-height:1.6;}
@@ -204,7 +247,7 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 .guest-check:last-child{border-bottom:0;}
 .guest-check input{width:auto; margin-top:2px; accent-color:var(--green);}
 .guest-check:has(input:checked){color:var(--white);}
-.prompt-card{background:linear-gradient(135deg,rgba(88,166,255,.12),rgba(25,196,99,.08)); border:1px solid rgba(88,166,255,.24); border-radius:10px; padding:16px; min-height:112px; display:flex; flex-direction:column; justify-content:space-between;}
+.prompt-card{background:linear-gradient(135deg,rgba(88,166,255,.12),rgba(4,111,81,.14)); border:1px solid rgba(88,166,255,.24); border-radius:10px; padding:16px; min-height:112px; display:flex; flex-direction:column; justify-content:space-between;}
 .prompt-label{color:var(--blue); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;}
 .prompt-text{font-size:15px; line-height:1.45; margin-top:12px;}
 .guest-facts{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px;}
@@ -232,9 +275,12 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 
 .status-tabs{display:flex; gap:8px; margin-bottom:16px;}
 .status-tab{padding:8px 16px; border-radius:8px; background:var(--panel2); border:1px solid var(--border); cursor:pointer; font-size:13px; color:var(--grey);}
-.status-tab.active{background:rgba(25,196,99,.12); border-color:rgba(25,196,99,.3); color:var(--green2);}
+.status-tab.active{background:rgba(4,111,81,.18); border-color:rgba(4,111,81,.45); color:var(--green2);}
 
 .empty{color:var(--grey); font-size:13px; padding:30px 10px; text-align:center;}
+body.presenter-mode #sidebar,body.presenter-mode #menuBtn{display:none;}
+body.presenter-mode #main{padding:24px 34px 50px;}
+body.presenter-mode .pagehead h1{font-size:30px;}
 
 @media(max-width:880px){
   #sidebar{position:fixed; top:0; left:0; bottom:0; transform:translateX(-100%);}
@@ -247,17 +293,59 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 </head>
 <body>
 
+<div id="loginShell" class="login-shell">
+  <div class="login-panel">
+    <div class="login-visual">
+      <div class="login-brand">
+        <div class="login-logo">
+          <img src="https://cdn.corenexis.com/f/BNTBsd93QCI.png" alt="KantineMedia logo">
+          <div>
+            <div class="login-logo-text">KantineMedia</div>
+            <div style="font-size:11px; letter-spacing:.12em; color:var(--white); font-weight:700; opacity:.9;">PRODUCTION</div>
+          </div>
+        </div>
+      </div>
+      <div class="login-copy">
+        <h1>CREATIVE MEDIA AGENCY.</h1>
+      </div>
+      <div class="login-hero-photo">
+        <img src="https://cdn.corenexis.com/f/6z5B3n07gXp.png" alt="Studio productieteam">
+      </div>
+    </div>
+    <div class="login-form-panel">
+      <div class="login-card">
+        <h2>Inloggen</h2>
+        <p>Log in om het beheerpaneel te openen.</p>
+        <div id="loginError" class="login-error">Onjuiste gebruikersnaam of wachtwoord.</div>
+        <div class="login-field">
+          <label for="loginUser">Gebruiker</label>
+          <input id="loginUser" type="text" placeholder="Vul gebruikersnaam in" autocomplete="username">
+        </div>
+        <div class="login-field">
+          <label for="loginPassword">Wachtwoord</label>
+          <div class="login-password-wrap">
+            <input id="loginPassword" type="password" placeholder="Vul wachtwoord in" autocomplete="current-password" onkeydown="if(event.key==='Enter'){submitLogin();}">
+            <button class="password-toggle" type="button" aria-label="Wachtwoord tonen" title="Wachtwoord tonen" onclick="toggleLoginPassword()">◉</button>
+          </div>
+        </div>
+        <button class="login-submit" onclick="submitLogin()">Inloggen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="appShell" class="hidden">
 <button id="menuBtn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
 
 <div id="sidebar">
   <div class="brand">
-    <div class="brand-mark">KM</div>
+    <img class="brand-mark" src="https://cdn.corenexis.com/f/BNTBsd93QCI.png" alt="KantineMedia logo">
     <div class="brand-text"><div class="l1">KantineMedia</div><div class="l2">PRODUCTION</div></div>
   </div>
   <nav id="navList"></nav>
   <div class="sidebar-foot">
-    Ingelogd als<br><b style="color:var(--white)">Gert-Jan Wensink</b>
-    <div class="role-pill">Beheerder</div>
+    Ingelogd als<br><b id="sidebarUser" style="color:var(--white)"></b>
+    <div id="sidebarRole" class="role-pill"></div>
   </div>
 </div>
 
@@ -319,7 +407,7 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
         <div class="field"><label>Programma</label><input id="f-programma" placeholder="bv. Ochtendshow"></div>
         <div class="field"><label>Presentator</label><input id="f-presentator" placeholder="bv. Gert-Jan Wensink"></div>
         <div class="field"><label>Datum</label><input id="f-datum" type="date"></div>
-        <div class="field"><label>Starttijd</label><input id="f-start" type="time" value="17:00"></div>
+        <div class="field"><label>Starttijd</label><input id="f-start" type="time" value="17:00" onchange="updateDraaiboekHour(this.value)"></div>
         <div class="field"><label>Eindtijd</label><input id="f-eind" type="time" value="18:00"></div>
         <div class="field"><label>Thema</label><input id="f-thema" placeholder="bv. Lokale muziek"></div>
         <div class="field"><label>Gast</label><input id="f-gast" placeholder="bv. -"></div>
@@ -328,7 +416,7 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
     </div>
 
     <div class="card" style="margin-bottom:16px;">
-      <h3>🎵 Muziek zoeken <span class="sub">voorbeelddata — klaar voor koppeling met een muziek-API</span></h3>
+      <h3>🎵 Muziek zoeken <span class="sub">Zoek in de bibliotheek of Spotify</span></h3>
       <div class="music-search">
         <input id="musicQuery" placeholder="🔎 Zoek artiest, titel of album..." oninput="renderTracks()">
       </div>
@@ -353,12 +441,13 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
 
   <!-- LIVE INFO -->
   <section class="page" id="page-liveinfo">
-    <div class="pagehead"><div><h1>Live info</h1><p>Actuele tijd, volgende segment en regionieuws voor de uitzending.</p></div></div>
+    <div class="pagehead"><div><h1>Live info</h1><p>Actuele tijd, volgende segment en regionieuws voor de uitzending.</p></div><button id="presenterModeBtn" class="btn secondary small" type="button" onclick="togglePresenterMode()">⛶ Presentatiemodus</button></div>
     <div class="grid2">
       <div class="card">
         <h3>🕒 Huidige tijd</h3>
         <div id="liveTimeDisplay" style="font-size:42px; font-weight:800; letter-spacing:.06em; margin-top:10px; color:var(--white);"></div>
         <div id="liveHourCountdown" style="margin-top:10px; color:var(--green2); font-size:14px;"></div>
+        <div id="liveHourEnd" style="margin-top:5px; color:var(--grey); font-size:13px;">Einde uur: 59:41</div>
       </div>
       <div class="card">
         <h3>📡 Volgende gedeelte</h3>
@@ -414,7 +503,7 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
         <div class="guest-badges" id="guestBadges"></div>
         <div class="guest-actions">
           <button class="btn" onclick="document.getElementById('guestPrep').scrollIntoView({behavior:'smooth'})">✨ Bereid je voor</button>
-          <button class="btn secondary" onclick="toast('Veel plezier in de studio!')">🎙️ Klaar voor live</button>
+          <button class="btn secondary" onclick="guestReadyForLive()">🎙️ Klaar voor live</button>
         </div>
         <div class="guest-schedule" id="guestSchedule"></div>
       </div>
@@ -493,7 +582,7 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
       <h3>⚙️ Systeeminstellingen</h3>
       <div class="field"><label>Actieve rol</label>
         <select id="adminRoleSelect">
-          <option>Medewerker</option><option>Redacteur</option><option>Beheerder</option>
+          <option>Medewerker</option><option>Redacteur</option><option>Producer</option><option>Beheerder</option>
         </select>
       </div>
       <div class="field">
@@ -507,12 +596,16 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
     <div class="pagehead"><div><h1>Instellingen</h1><p>Voorkeuren en systeeminstellingen.</p></div></div>
     <div class="card" style="max-width:520px;">
       <h3>Gebruikersrol</h3>
-      <div class="field"><label>Actieve rol (demo)</label>
+      <div class="field"><label>Actieve rol</label>
         <select id="roleSelect" onchange="changeRole(this.value)">
-          <option>Medewerker</option><option>Redacteur</option><option selected>Beheerder</option>
+          <option>Medewerker</option><option>Redacteur</option><option>Producer</option><option selected>Beheerder</option>
         </select>
       </div>
-      <p style="color:var(--grey); font-size:12.5px; line-height:1.6;">Medewerkers bekijken draaiboeken, informatie en FAX. Redacteuren beheren daarnaast FAX, informatie en draaiboeken. Beheerders beheren de volledige applicatie, inclusief medewerkers en instellingen. Echte login volgt in een latere versie.</p>
+      <h3 style="margin-top:20px;">Weergave</h3>
+      <div class="field">
+        <button id="themeToggleBtn" class="btn secondary" type="button" onclick="toggleTheme()">☀️ Lichte stijl</button>
+      </div>
+      <p style="color:var(--grey); font-size:12.5px; line-height:1.6;">Medewerkers bekijken draaiboeken, informatie en FAX. Redacteuren beheren daarnaast FAX, informatie en draaiboeken. Beheerders beheren de volledige applicatie, inclusief medewerkers en instellingen.</p>
       <div class="field" style="margin-top:16px;"><label>Data</label>
         <button class="btn danger small" onclick="if(confirm('Alle lokale gegevens wissen?')){localStorage.clear(); location.reload();}">Alle lokale gegevens wissen</button>
       </div>
@@ -520,8 +613,19 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
   </section>
 
 </div>
+</div>
 
 <div id="toast"></div>
+
+<div class="modal-bg" id="guestReadyModalBg">
+  <div class="modal">
+    <h3>🎙️ Artiest klaar voor live</h3>
+    <p id="guestReadyMessage" style="color:var(--grey); line-height:1.6; margin-bottom:18px;"></p>
+    <div style="display:flex; justify-content:flex-end;">
+      <button class="btn" type="button" onclick="closeGuestReadyModal()">Begrepen</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-bg" id="adminGateModalBg">
   <div class="modal">
@@ -598,9 +702,47 @@ label{font-size:12px; color:var(--grey); font-weight:600; margin-bottom:5px; dis
    ===================================================================== */
 
 /* ---------- helpers (niet aanpassen) ---------- */
+const SHARED_STATE_URL = location.protocol === 'http:' && !location.hostname.endsWith('github.io') ? '/api/state' : '';
 function toast(msg){const t=document.getElementById('toast'); t.innerHTML='✓ '+msg; t.classList.add('show'); clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),2200);}
+async function hydrateSharedState(){
+  if (!SHARED_STATE_URL) return;
+  try{
+    const response = await fetch(SHARED_STATE_URL, { cache: 'no-store' });
+    if (!response.ok) return;
+    const state = await response.json();
+    if (!state || typeof state !== 'object') return;
+    Object.entries(state).forEach(([key, value]) => {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) {}
+    });
+  } catch (error) {}
+}
+async function pushSharedState(){
+  if (!SHARED_STATE_URL) return;
+  try {
+    const snapshot = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      try {
+        snapshot[key] = JSON.parse(localStorage.getItem(key));
+      } catch (error) {
+        snapshot[key] = localStorage.getItem(key);
+      }
+    }
+    await fetch(SHARED_STATE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(snapshot)
+    });
+  } catch (error) {}
+}
 function load(key,fallback){try{const v=localStorage.getItem(key); return v?JSON.parse(v):fallback;}catch(e){return fallback;}}
-function save(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+function save(key,val){
+  try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}
+  if (typeof fetch === 'function') {
+    pushSharedState();
+  }
+}
 function uid(){return 'id'+Math.random().toString(36).slice(2,10);}
 
 const NAV = [
@@ -624,48 +766,128 @@ NAV.forEach(n=>{
   d.onclick=()=>showPage(n.id);
   navList.appendChild(d);
 });
-function isAdminLoggedIn(){return localStorage.getItem('km_admin_loggedin')==='true';}
+const AUTH_USERS = {
+  'Gert-Jan': { password: 'Wezep26#', role: 'Beheerder' },
+  'Dick': { password: 'DG3nsenKM', role: 'Producer' },
+  'Artiest': { password: '123', role: 'Artiest' }
+};
+function isAdminLoggedIn(){return localStorage.getItem('km_loggedin')==='true';}
+function currentUser(){return localStorage.getItem('km_user')||'';}
+function currentUserRole(){return localStorage.getItem('km_role')||'Beheerder';}
+function setLoggedInUser(username, roleName){
+  localStorage.setItem('km_loggedin','true');
+  localStorage.setItem('km_user', username);
+  localStorage.setItem('km_role', roleName);
+  const roleSelect = document.getElementById('roleSelect');
+  if(roleSelect){ roleSelect.value = roleName; }
+  const adminRoleSelect = document.getElementById('adminRoleSelect');
+  if(adminRoleSelect){ adminRoleSelect.value = roleName; }
+  const sidebarUser = document.getElementById('sidebarUser');
+  if(sidebarUser){ sidebarUser.textContent = username; }
+  const sidebarRole = document.getElementById('sidebarRole');
+  if(sidebarRole){ sidebarRole.textContent = roleName; }
+  if(username==='Gert-Jan') setTimeout(checkGuestReadyNotification,0);
+}
+function toggleLoginPassword(){
+  const input=document.getElementById('loginPassword');
+  const toggle=document.querySelector('.password-toggle');
+  if(!input) return;
+  const visible=input.type==='text';
+  input.type=visible?'password':'text';
+  if(toggle){
+    toggle.textContent=visible?'◉':'○';
+    toggle.setAttribute('aria-label',visible?'Wachtwoord tonen':'Wachtwoord verbergen');
+    toggle.title=visible?'Wachtwoord tonen':'Wachtwoord verbergen';
+  }
+}
+function guestReadyForLive(){
+  const notification={id:uid(),artist:currentUser()||'Artiest',createdAt:new Date().toISOString()};
+  save('km_guest_ready',notification);
+  toast('Gert-Jan is gemeld dat je klaar bent voor live');
+  if(currentUser()==='Gert-Jan') showGuestReadyModal(notification);
+}
+function showGuestReadyModal(notification){
+  const message=document.getElementById('guestReadyMessage');
+  if(message) message.textContent=`${notification.artist} is klaar voor live (${new Date(notification.createdAt).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})}).`;
+  document.getElementById('guestReadyModalBg')?.classList.add('show');
+}
+function closeGuestReadyModal(){
+  document.getElementById('guestReadyModalBg')?.classList.remove('show');
+}
+async function checkGuestReadyNotification(){
+  if(currentUser()!=='Gert-Jan')return;
+  let notification=load('km_guest_ready',null);
+  if(SHARED_STATE_URL){
+    try{
+      const response=await fetch(SHARED_STATE_URL,{cache:'no-store'});
+      if(response.ok){
+        const state=await response.json();
+        if(state.km_guest_ready){
+          notification=state.km_guest_ready;
+          localStorage.setItem('km_guest_ready',JSON.stringify(notification));
+        }
+      }
+    }catch(error){}
+  }
+  if(!notification || localStorage.getItem('km_guest_ready_seen')===notification.id)return;
+  localStorage.setItem('km_guest_ready_seen',notification.id);
+  showGuestReadyModal(notification);
+}
+function submitLogin(){
+  const username = (document.getElementById('loginUser') || {}).value || '';
+  const password = (document.getElementById('loginPassword') || {}).value || '';
+  const user = AUTH_USERS[username];
+  const error = document.getElementById('loginError');
+  if (user && user.password === password) {
+    setLoggedInUser(username, user.role);
+    const loginShell = document.getElementById('loginShell');
+    const appShell = document.getElementById('appShell');
+    if(loginShell) loginShell.classList.add('hidden');
+    if(appShell) appShell.classList.remove('hidden');
+    if(error) error.classList.remove('show');
+    toast('Welkom ' + username);
+    setTimeout(() => showPage('dashboard'), 10);
+    return true;
+  }
+  if(error){ error.classList.add('show'); }
+  if(document.getElementById('loginPassword')) document.getElementById('loginPassword').value='';
+  return false;
+}
+function openAdminGate(){
+  const loginShell = document.getElementById('loginShell');
+  const appShell = document.getElementById('appShell');
+  if(loginShell) loginShell.classList.remove('hidden');
+  if(appShell) appShell.classList.add('hidden');
+  const input = document.getElementById('loginUser');
+  if (input) { input.focus(); }
+}
+function closeAdminGate(){
+  const loginShell = document.getElementById('loginShell');
+  const appShell = document.getElementById('appShell');
+  if(loginShell) loginShell.classList.add('hidden');
+  if(appShell) appShell.classList.remove('hidden');
+}
+function submitAdminGate(){
+  return submitLogin();
+}
+function logoutAdmin(){
+  localStorage.setItem('km_loggedin','false');
+  localStorage.removeItem('km_user');
+  localStorage.removeItem('km_role');
+  const loginShell = document.getElementById('loginShell');
+  const appShell = document.getElementById('appShell');
+  if(loginShell) loginShell.classList.remove('hidden');
+  if(appShell) appShell.classList.add('hidden');
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPassword').value='';
+  document.getElementById('loginError').classList.remove('show');
+  showPage('dashboard');
+  toast('Uitgelogd');
+}
 function requireAdmin(){
   if(isAdminLoggedIn()) return true;
   openAdminGate();
   return false;
-}
-function openAdminGate(){
-  const bg=document.getElementById('adminGateModalBg');
-  const input=document.getElementById('adminGatePassword');
-  if(bg){ bg.classList.add('show'); }
-  if(input){
-    input.value='';
-    setTimeout(()=>input.focus(), 100);
-  }
-}
-function closeAdminGate(){
-  const bg=document.getElementById('adminGateModalBg');
-  const input=document.getElementById('adminGatePassword');
-  if(bg){ bg.classList.remove('show'); }
-  if(input){ input.value=''; }
-}
-function submitAdminGate(){
-  const input=document.getElementById('adminGatePassword');
-  const pass=input ? input.value : '';
-  if(pass === 'K@NTINE'){
-    localStorage.setItem('km_admin_loggedin','true');
-    closeAdminGate();
-    toast('Beheer geopend');
-    showPage('beheer');
-    return true;
-  }
-  if(input){
-    input.value='';
-    input.focus();
-  }
-  toast('Wachtwoord onjuist');
-  return false;
-}
-function logoutAdmin(){
-  localStorage.setItem('km_admin_loggedin','false');
-  showPage('dashboard');
-  toast('Uitgelogd');
 }
 function showPage(id){
   if(id==='beheer' && !isAdminLoggedIn()){
@@ -693,8 +915,8 @@ function showPage(id){
 document.getElementById('roleSelect').value = load('km_role','Beheerder');
 
 const BLOCK_TYPES = {
-  'Muziek':'#19C463','Praat':'#58A6FF','Interview':'#B983FF','Reclame':'#E3B341',
-  'Jingle':'#35E07A','Nieuws':'#F85149','Mededeling':'#8B949E','Overig':'#DDA0DD'
+  'Muziek':'#046f51','Praat':'#58A6FF','Interview':'#B983FF','Reclame':'#E3B341',
+  'Jingle':'#046f51','Nieuws':'#F85149','Mededeling':'#8B949E','Overig':'#DDA0DD'
 };
 
 const DEFAULT_DASHBOARD_STATS = [
@@ -900,7 +1122,7 @@ function updateDashboardGreeting(){
   const el = document.getElementById('dashboardGreeting');
   if (!el) return;
   const greeting = getGreetingByTime();
-  el.textContent = `${greeting}, Gert-Jan 👋`;
+  el.textContent = `${greeting}, ${currentUser()||'presentator'} 👋`;
 }
 function updateDashboardClock(){
   const el = document.getElementById('dashboardClock');
@@ -960,6 +1182,27 @@ function changeRole(role){
   document.getElementById('roleSelect').value = role;
   toast('Rol bijgewerkt');
 }
+function applyTheme(theme, persist=true){
+  const selectedTheme=theme==='light'?'light':'dark';
+  document.body.classList.toggle('light',selectedTheme==='light');
+  const button=document.getElementById('themeToggleBtn');
+  if(button) button.textContent=selectedTheme==='light'?'🌙 Donkere stijl':'☀️ Lichte stijl';
+  if(persist) save('km_theme',selectedTheme);
+}
+function toggleTheme(){
+  const nextTheme=document.body.classList.contains('light')?'dark':'light';
+  applyTheme(nextTheme);
+  toast(nextTheme==='light'?'Lichte stijl ingesteld':'Donkere stijl ingesteld');
+}
+function togglePresenterMode(){
+  const enabled=document.body.classList.toggle('presenter-mode');
+  const button=document.getElementById('presenterModeBtn');
+  if(button) button.textContent=enabled?'⛶ Normale weergave':'⛶ Presentatiemodus';
+  if(enabled && document.documentElement.requestFullscreen){
+    document.documentElement.requestFullscreen().catch(()=>{});
+  }
+  if(!enabled && document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+}
 function statusBadge(s){
   const map={'Klaar':['green','🟢'],'In voorbereiding':['amber','🟡'],'Nog niet gestart':['red','🔴'],'Afgerond':['grey','⚪']};
   const [c,ic]=map[s]||['grey','⚪'];
@@ -983,19 +1226,44 @@ function renderDraaiboekenList(){
       </div>
     </div>`).join('');
 }
+function getDefaultDraaiboekBlocks(startTime='00:00'){
+  const hour=String(startTime||'00:00').split(':')[0].padStart(2,'0');
+  const showTime=minute=>`${hour}:${String(minute).padStart(2,'0')}`;
+  return [
+    {id:uid(), tijd:showTime(0), type:'Nieuws', inhoud:'NOS Journaal', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(2), type:'Mededeling', inhoud:'ANWB verkeer', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(3), type:'Reclame', inhoud:'Reclameblok', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(5), type:'Jingle', inhoud:'Opener (TOTH)', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(10), type:'Praat', inhoud:'Voorstelrondje', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(15), type:'Muziek', inhoud:'PERFORMANCE LIVE', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(30), type:'Nieuws', inhoud:'RegioNieuws', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(45), type:'Muziek', inhoud:'PERFORMANCE LIVE', muziek:'', opm:''},
+    {id:uid(), tijd:showTime(59), type:'Mededeling', inhoud:'Nieuws aankondigen', muziek:'', opm:''}
+  ];
+}
 function newDraaiboek(){
   currentDraaiboekId=null;
   document.getElementById('editorTitle').textContent='Nieuwe uitzending';
   ['programma','presentator','datum','gast','thema','opm'].forEach(k=>document.getElementById('f-'+k).value='');
   document.getElementById('f-start').value='17:00'; document.getElementById('f-eind').value='18:00';
-  currentBlocks=[
-    {id:uid(), tijd:'17:00', type:'Jingle', inhoud:'Openingstune', muziek:'', opm:'Intro'},
-    {id:uid(), tijd:'17:01', type:'Praat', inhoud:'Welkom bij de uitzending', muziek:'', opm:''},
-  ];
+  currentBlocks=getDefaultDraaiboekBlocks(document.getElementById('f-start').value);
+  timelineUndoStack=[];
   renderTimeline();
   showPage('editor');
 }
 let currentBlocks=[];
+let timelineUndoStack=[];
+function updateDraaiboekHour(startTime){
+  if(!currentBlocks.length) return;
+  const hour=String(startTime||'00:00').split(':')[0].padStart(2,'0');
+  const defaultMinutes=[0,2,3,5,10,15,30,45,59];
+  currentBlocks.forEach((block,index)=>{
+    if(defaultMinutes[index] === undefined) return;
+    block.tijd=`${hour}:${String(defaultMinutes[index]).padStart(2,'0')}`;
+  });
+  queueCurrentDraftSave();
+  renderTimeline();
+}
 function openDraaiboek(id){
   const dbs=load('km_draaiboeken',[]); const d=dbs.find(x=>x.id===id); if(!d)return;
   currentDraaiboekId=id;
@@ -1043,10 +1311,34 @@ function saveDraaiboek(){
     const idx=dbs.findIndex(x=>x.id===currentDraaiboekId); dbs[idx]=obj;
   } else { dbs.push(obj); currentDraaiboekId=obj.id; }
   save('km_draaiboeken',dbs);
+  clearTimeout(currentDraftSaveTimer);
+  localStorage.removeItem('km_current_draft');
   toast('Draaiboek opgeslagen');
 }
 
 /* timeline blocks */
+let currentDraftSaveTimer=null;
+function saveCurrentDraft(){
+  if(!currentBlocks.length)return;
+  const draft={
+    id:currentDraaiboekId,
+    programma:document.getElementById('f-programma')?.value||'',
+    presentator:document.getElementById('f-presentator')?.value||'',
+    datum:document.getElementById('f-datum')?.value||'',
+    start:document.getElementById('f-start')?.value||'17:00',
+    eind:document.getElementById('f-eind')?.value||'18:00',
+    thema:document.getElementById('f-thema')?.value||'',
+    gast:document.getElementById('f-gast')?.value||'',
+    opm:document.getElementById('f-opm')?.value||'',
+    blocks:JSON.parse(JSON.stringify(currentBlocks)),
+    savedAt:new Date().toISOString()
+  };
+  try{localStorage.setItem('km_current_draft',JSON.stringify(draft));}catch(error){}
+}
+function queueCurrentDraftSave(){
+  clearTimeout(currentDraftSaveTimer);
+  currentDraftSaveTimer=setTimeout(saveCurrentDraft,250);
+}
 function renderTimeline(){
   const el=document.getElementById('timeline');
   document.getElementById('blockCount').textContent=`— ${currentBlocks.length} blokken`;
@@ -1060,13 +1352,33 @@ function renderTimeline(){
       <input placeholder="Muziek" value="${b.muziek.replace(/"/g,'&quot;')}" onchange="updateBlock('${b.id}','muziek',this.value)">
       <input placeholder="Opmerking" value="${b.opm.replace(/"/g,'&quot;')}" onchange="updateBlock('${b.id}','opm',this.value)">
       <div class="btnstack">
+        <button class="icobtn back" title="Terug" onclick="undoLastSkip()">↩</button>
+        <button class="icobtn skip" title="Doorgaan / overslaan" onclick="skipBlock('${b.id}')">✕</button>
         <button class="icobtn" title="Omhoog" onclick="moveBlock('${b.id}',-1)">↑</button>
         <button class="icobtn" title="Omlaag" onclick="moveBlock('${b.id}',1)">↓</button>
         <button class="icobtn" title="Verwijder" onclick="removeBlock('${b.id}')">🗑</button>
       </div>
     </div>`).join('');
 }
-function updateBlock(id,field,val){const b=currentBlocks.find(x=>x.id===id); if(b) b[field]=val;}
+function updateBlock(id,field,val){const b=currentBlocks.find(x=>x.id===id); if(b){ b[field]=val; queueCurrentDraftSave(); }}
+function skipBlock(id){
+  const index=currentBlocks.findIndex(x=>x.id===id);
+  if(index===-1) return;
+  const [removed]=currentBlocks.splice(index,1);
+  timelineUndoStack.push({block:removed, index});
+  queueCurrentDraftSave();
+  renderTimeline();
+  toast('Blok overgeslagen');
+}
+function undoLastSkip(){
+  const last=timelineUndoStack.pop();
+  if(!last){ toast('Er is niets om terug te draaien'); return; }
+  const insertIndex=Math.min(last.index, currentBlocks.length);
+  currentBlocks.splice(insertIndex,0,last.block);
+  queueCurrentDraftSave();
+  renderTimeline();
+  toast('Laatste actie teruggedraaid');
+}
 function updateBlockTime(id,val){
   const b=currentBlocks.find(x=>x.id===id); if(!b)return;
   const digits=String(val||'').replace(/[^0-9]/g,'').slice(0,4);
@@ -1077,30 +1389,55 @@ function updateBlockTime(id,val){
     return;
   }
   b.tijd=val;
+  queueCurrentDraftSave();
   renderTimeline();
 }
 function moveBlock(id,dir){
   const i=currentBlocks.findIndex(x=>x.id===id); const j=i+dir;
   if(j<0||j>=currentBlocks.length)return;
   [currentBlocks[i],currentBlocks[j]]=[currentBlocks[j],currentBlocks[i]];
+  queueCurrentDraftSave();
   renderTimeline();
 }
-function removeBlock(id){currentBlocks=currentBlocks.filter(x=>x.id!==id); renderTimeline();}
+function removeBlock(id){currentBlocks=currentBlocks.filter(x=>x.id!==id); queueCurrentDraftSave(); renderTimeline();}
 function addBlock(){
   currentBlocks.push({id:uid(), tijd:'18:00', type:'Overig', inhoud:'', muziek:'', opm:''});
+  queueCurrentDraftSave();
   renderTimeline();
 }
 
 /* music search inside editor */
-function renderTracks(){
+async function searchSpotifyTracks(query){
+  if(!query || location.protocol !== 'http:' || location.hostname.endsWith('github.io')) return null;
+  try{
+    const response=await fetch(`/api/spotify/search?q=${encodeURIComponent(query)}&limit=50`);
+    if(!response.ok)return null;
+    const data=await response.json();
+    return Array.isArray(data.tracks) ? data.tracks : [];
+  }catch(error){return null;}
+}
+function mapSpotifyTrack(track,index){
+  return {
+    artiest:track.artiest||track.artists?.map(artist=>artist.name).join(', ')||'Onbekende artiest',
+    titel:track.titel||track.name||'Onbekende track',
+    album:typeof track.album==='string'?track.album:(track.album?.name||'Spotify release'),
+    duur:track.duur||'',
+    jaar:track.jaar||track.album?.release_date?.slice(0,4)||'',
+    genre:track.genre||'Spotify',
+    cover:track.cover||track.album?.images?.[0]?.url||spotifyCover(index,track.name||'Track')
+  };
+}
+function localMusicResults(query){
+  const lib=load('km_muziek',[]).map((t,i)=>({...t,cover:t.cover||spotifyCover(i,t.titel||'Track')}));
+  return lib.filter(t=>!query||(t.artiest+t.titel+t.album).toLowerCase().includes(query)).slice(0,50);
+}
+async function renderTracks(){
   const q=(document.getElementById('musicQuery').value||'').toLowerCase();
-  const lib=load('km_muziek',[]).map((t,i)=>({
-    ...t,
-    cover: t.cover || spotifyCover(i, t.titel || 'Track'),
-    preview: t.preview || spotifyPreview(i)
-  }));
-  const results=lib.filter(t=>!q || (t.artiest+t.titel+t.album).toLowerCase().includes(q)).slice(0,8);
-  document.getElementById('trackList').innerHTML = results.map((t,i)=>`
+  const target=document.getElementById('trackList');
+  target.innerHTML=q?'<div class="empty">Spotify releases zoeken...</div>':'';
+  const spotifyResults=await searchSpotifyTracks(q);
+  const results=(spotifyResults===null?localMusicResults(q):spotifyResults.map(mapSpotifyTrack)).slice(0,50);
+  target.innerHTML = results.map((t,i)=>`
     <div class="track">
       <div class="track-main">
         <img class="track-cover" src="${t.cover}" alt="${t.artiest} ${t.titel}">
@@ -1110,7 +1447,6 @@ function renderTracks(){
         </div>
       </div>
       <div class="track-actions">
-        <audio class="mini-player" controls preload="none" src="${t.preview}"></audio>
         <button class="btn small" onclick='addTrackToBlock(${JSON.stringify(t.artiest+" – "+t.titel).replace(/'/g,"&apos;")})'>+ Toevoegen</button>
       </div>
     </div>`).join('') || '<div class="empty">Geen resultaten.</div>';
@@ -1119,15 +1455,13 @@ function addTrackToBlock(name){
   currentBlocks.push({id:uid(), tijd:'18:00', type:'Muziek', inhoud:name, muziek:'🎵', opm:''});
   renderTimeline(); toast('Track toegevoegd aan draaiboek');
 }
-function renderLibTracks(){
+async function renderLibTracks(){
   const q=(document.getElementById('musicQueryLib').value||'').toLowerCase();
-  const lib=load('km_muziek',[]).map((t,i)=>({
-    ...t,
-    cover: t.cover || spotifyCover(i, t.titel || 'Track'),
-    preview: t.preview || spotifyPreview(i)
-  }));
-  const results=lib.filter(t=>!q || (t.artiest+t.titel+t.album).toLowerCase().includes(q));
-  document.getElementById('libTrackList').innerHTML = results.map((t,i)=>`
+  const target=document.getElementById('libTrackList');
+  target.innerHTML=q?'<div class="empty">Spotify releases zoeken...</div>':'';
+  const spotifyResults=await searchSpotifyTracks(q);
+  const results=spotifyResults===null?localMusicResults(q):spotifyResults.map(mapSpotifyTrack);
+  target.innerHTML = results.map((t,i)=>`
     <div class="track">
       <div class="track-main">
         <img class="track-cover" src="${t.cover}" alt="${t.artiest} ${t.titel}">
@@ -1136,14 +1470,14 @@ function renderLibTracks(){
           <div>${t.album} · ${t.duur} · ${t.jaar} · ${t.genre}</div>
         </div>
       </div>
-      <div class="track-actions">
-        <audio class="mini-player" controls preload="none" src="${t.preview}"></audio>
-      </div>
     </div>`).join('') || '<div class="empty">Geen resultaten.</div>';
 }
 
 /* ---------- LIVE INFO PAGE ---------- */
 let newsRefreshTimer=null;
+let liveUndoStack=[];
+let liveNewsIndex=0;
+let liveNewsUndoStack=[];
 function scheduleHourlyNewsRefresh(){
   if(newsRefreshTimer) return;
   const now=new Date();
@@ -1193,8 +1527,41 @@ function getNearestNextBlock(){
     label: next.inhoud || next.type || 'Volgend onderdeel',
     time: target,
     countdown,
-    details: `${next.type || 'Segment'} · ${next.inhoud || 'Geen titel'}`
+    details: `${next.type || 'Segment'} · ${next.inhoud || 'Geen titel'}`,
+    block: next,
+    blockIndex: latest.blocks.findIndex(block => block.id === next.id),
+    draaiboekId: latest.id
   };
+}
+function skipNextLiveBlock(){
+  const next=getNearestNextBlock();
+  if(!next.block || next.blockIndex<0){toast('Geen volgend draaiboekitem om over te slaan'); return;}
+  const dbs=load('km_draaiboeken',[]);
+  const draaiboek=dbs.find(item=>item.id===next.draaiboekId);
+  if(!draaiboek || !Array.isArray(draaiboek.blocks)) return;
+  const [block]=draaiboek.blocks.splice(next.blockIndex,1);
+  liveUndoStack.push({draaiboekId:draaiboek.id, block, index:next.blockIndex});
+  save('km_draaiboeken',dbs);
+  renderLiveInfoPage();
+  toast('Volgend draaiboekitem overgeslagen');
+}
+function undoLiveSkip(){
+  const last=liveUndoStack.pop();
+  if(!last){toast('Er is geen live-item om terug te halen'); return;}
+  const dbs=load('km_draaiboeken',[]);
+  const draaiboek=dbs.find(item=>item.id===last.draaiboekId);
+  if(!draaiboek || !Array.isArray(draaiboek.blocks)) return;
+  draaiboek.blocks.splice(Math.min(last.index,draaiboek.blocks.length),0,last.block);
+  save('km_draaiboeken',dbs);
+  renderLiveInfoPage();
+  toast('Live-item teruggehaald');
+}
+function formatLiveCountdown(totalSeconds){
+  const hours=Math.floor(totalSeconds/3600);
+  const minutes=Math.floor((totalSeconds%3600)/60);
+  const seconds=totalSeconds%60;
+  if(hours>0) return `${hours} uur, ${minutes} minuten en ${seconds} seconden`;
+  return `${minutes} minuten en ${seconds} seconden`;
 }
 const NEWS_SOURCES = [
   { id:'loco-oldebroek', name:'Loco Media Groep · Oldebroek', landing:'https://locomediagroep.nl/filter/gemeente:oldebroek', urls:['https://locomediagroep.nl/feed/','https://locomediagroep.nl/wp-json/wp/v2/posts?per_page=8'] },
@@ -1219,6 +1586,10 @@ function getNewsConfig(){
   const config=load('km_news_config',{selected:[]});
   return {selected:Array.isArray(config.selected)?config.selected:[]};
 }
+function getDismissedNewsIds(){
+  const dismissed=load('km_news_dismissed',[]);
+  return Array.isArray(dismissed)?dismissed:[];
+}
 function parseNewsResponse(text, source){
   const xml=new DOMParser().parseFromString(text,'text/xml');
   const items=[...xml.querySelectorAll('item, entry')];
@@ -1226,7 +1597,8 @@ function parseNewsResponse(text, source){
     const title=item.querySelector('title')?.textContent?.trim()||'';
     const link=item.querySelector('link')?.getAttribute('href')||item.querySelector('link')?.textContent?.trim()||'';
     const date=item.querySelector('pubDate, published, updated')?.textContent?.trim()||'';
-    return {id:`${source.id}-${index}-${btoa(unescape(encodeURIComponent(title))).slice(0,16)}`,source:source.name,title,link,date};
+    const description=item.querySelector('description, content, summary')?.textContent?.trim()||'';
+    return {id:`${source.id}-${index}-${btoa(unescape(encodeURIComponent(title))).slice(0,16)}`,source:source.name,title,link,date,description};
   }).filter(item=>item.title);
 }
 async function fetchNewsSource(source){
@@ -1240,7 +1612,7 @@ async function fetchNewsSource(source){
         if(items.length) return items;
       }else{
         const data=JSON.parse(text);
-        if(Array.isArray(data)) return data.slice(0,8).map((item,index)=>({id:`${source.id}-${index}-${item.id||index}`,source:source.name,title:(item.title?.rendered||item.title||'').replace(/<[^>]*>/g,''),link:item.link||'',date:item.date||''})).filter(item=>item.title);
+        if(Array.isArray(data)) return data.slice(0,8).map((item,index)=>({id:`${source.id}-${index}-${item.id||index}`,source:source.name,title:(item.title?.rendered||item.title||'').replace(/<[^>]*>/g,''),link:item.link||'',date:item.date||'',description:(item.excerpt?.rendered||item.content?.rendered||'').replace(/<[^>]*>/g,' ')})).filter(item=>item.title);
       }
     }catch(error){ continue; }
   }
@@ -1248,11 +1620,20 @@ async function fetchNewsSource(source){
 }
 async function refreshNewsArticles(showMessage=false){
   const results=(await Promise.all(NEWS_SOURCES.map(source=>fetchNewsSource(source).then(items=>items.slice(0,3))))).flat();
-  if(results.length) save('km_news_articles',results);
-  else {
-    const existing=load('km_news_articles',[]);
+  const existing=load('km_news_articles',[]);
+  if(results.length) {
+    const resultIds=new Set(results.map(article=>article.id));
+    const merged=[...results,...existing.filter(article=>!resultIds.has(article.id))];
+    save('km_news_articles',merged);
+    const dismissed=getDismissedNewsIds();
+    const availableIds=results.map(article=>article.id).filter(id=>!dismissed.includes(id));
+    const config=getNewsConfig();
+    const selected=config.selected.length ? [...config.selected,...availableIds.filter(id=>!config.selected.includes(id))] : availableIds;
+    save('km_news_config',{selected});
+  } else {
     const manual=existing.filter(article=>String(article.id).startsWith('manual-'));
     save('km_news_articles',[...NEWS_FALLBACK_ARTICLES,...manual]);
+    if(!getNewsConfig().selected.length) save('km_news_config',{selected:NEWS_FALLBACK_ARTICLES.map(article=>article.id)});
   }
   if(showMessage) toast(results.length ? `${results.length} nieuwsartikelen geladen` : 'Geen automatische artikelen gevonden; de bronpagina\'s blijven beschikbaar');
   renderAdminNewsEditor();
@@ -1314,7 +1695,75 @@ function renderLiveNewsManager(){
 function renderLiveNewsFeed(items){
   const newsTarget=document.getElementById('liveNewsFeed');
   if(!newsTarget)return;
-  newsTarget.innerHTML=items.length ? items.map((item,idx)=>`<div style="padding:10px 0; border-bottom:1px solid var(--border);"><div style="font-size:12px; color:var(--green2); font-weight:700; margin-bottom:4px;">${escapeNewsText(item.source)} · ARTIKEL ${idx+1}</div>${item.link?`<a href="${escapeNewsText(item.link)}" target="_blank" rel="noopener" style="line-height:1.5; color:var(--white);">${escapeNewsText(item.title)}</a>`:`<div style="line-height:1.5; color:var(--white);">${escapeNewsText(item.title)}</div>`}</div>`).join('') : '<div style="color:var(--grey);">Nog geen regionieuws geselecteerd. Log in om zelf artikelen toe te voegen.</div>';
+  if(!items.length){
+    newsTarget.innerHTML='<div style="color:var(--grey);">Nog geen regionieuws geselecteerd. Log in om zelf artikelen toe te voegen.</div>';
+    return;
+  }
+  liveNewsIndex=Math.min(liveNewsIndex,items.length-1);
+  const item=items[liveNewsIndex];
+  newsTarget.innerHTML=`
+    <article data-article-url="${escapeNewsText(item.link||'')}" ${item.link?'role="link" tabindex="0" onclick="openLiveNewsArticle(event)" onkeydown="if(event.key===\'Enter\'){openLiveNewsArticle(event)}"':''} style="border:1px solid var(--border); border-radius:10px; padding:14px; background:var(--panel2); ${item.link?'cursor:pointer;':''}">
+      <div style="font-size:12px; color:var(--green2); font-weight:700; margin-bottom:8px;">${escapeNewsText(item.source)} · ARTIKEL ${liveNewsIndex+1} VAN ${items.length}</div>
+      <details open>
+        <summary style="cursor:pointer; font-weight:700; line-height:1.45;">${escapeNewsText(item.title)}</summary>
+        <div style="color:var(--grey); line-height:1.6; margin-top:12px;">${escapeNewsText(item.description||'Open de bron voor het volledige artikel.')}</div>
+      </details>
+      ${item.link?'<div style="color:var(--grey); font-size:12px; margin-top:12px;">Klik op dit artikel om het volledige bericht te openen.</div>':'<div style="color:var(--grey); font-size:12px; margin-top:12px;">Voor dit bericht is geen bronlink beschikbaar.</div>'}
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:16px;">
+        <div style="display:flex; gap:6px;">
+          <button class="icobtn back" title="Vorig artikel" aria-label="Vorig artikel" onclick="showPreviousLiveNews()">←</button>
+          <button class="icobtn" title="Volgend artikel" aria-label="Volgend artikel" onclick="showNextLiveNews()">→</button>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="icobtn skip" title="Artikel niet relevant, verwijderen" aria-label="Artikel verwijderen" onclick="removeLiveNewsArticle()">✕</button>
+          <button class="icobtn back" title="Laatste verwijderd artikel terughalen" aria-label="Laatste artikel terughalen" onclick="restoreLiveNewsArticle()">↩</button>
+        </div>
+      </div>
+    </article>`;
+}
+function openLiveNewsArticle(event){
+  if(event.target.closest('button,summary,a')) return;
+  const url=event.currentTarget.dataset.articleUrl;
+  if(url) window.open(url,'_blank','noopener,noreferrer');
+}
+function showPreviousLiveNews(){
+  const items=getSelectedNewsArticles();
+  if(!items.length)return;
+  liveNewsIndex=(liveNewsIndex-1+items.length)%items.length;
+  renderLiveNewsFeed(items);
+}
+function showNextLiveNews(){
+  const items=getSelectedNewsArticles();
+  if(!items.length)return;
+  liveNewsIndex=(liveNewsIndex+1)%items.length;
+  renderLiveNewsFeed(items);
+}
+function removeLiveNewsArticle(){
+  const items=getSelectedNewsArticles();
+  const item=items[liveNewsIndex];
+  if(!item)return;
+  const config=getNewsConfig();
+  const selected=config.selected.length ? config.selected : items.map(article=>article.id);
+  liveNewsUndoStack.push({id:item.id,index:liveNewsIndex});
+  const dismissed=getDismissedNewsIds();
+  if(!dismissed.includes(item.id)) save('km_news_dismissed',[...dismissed,item.id]);
+  save('km_news_config',{selected:selected.filter(id=>id!==item.id)});
+  liveNewsIndex=Math.min(liveNewsIndex,Math.max(0,items.length-2));
+  renderLiveNewsFeed(getSelectedNewsArticles());
+  toast('Artikel uit Live info verwijderd');
+}
+function restoreLiveNewsArticle(){
+  const last=liveNewsUndoStack.pop();
+  if(!last){toast('Er is geen verwijderd artikel om terug te halen'); return;}
+  const config=getNewsConfig();
+  if(config.selected.includes(last.id)){return;}
+  save('km_news_dismissed',getDismissedNewsIds().filter(id=>id!==last.id));
+  const restored=[...config.selected];
+  restored.splice(Math.min(last.index,restored.length),0,last.id);
+  save('km_news_config',{selected:restored});
+  liveNewsIndex=last.index;
+  renderLiveNewsFeed(getSelectedNewsArticles());
+  toast('Artikel teruggehaald');
 }
 async function loadRegionNews(){
   const cached=load('km_news_articles',[]);
@@ -1362,10 +1811,14 @@ function renderLiveInfoPage(){
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds % 60;
       nextTarget.innerHTML = `
-        <div style="font-size:36px; font-weight:800; color:var(--green2);">${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}</div>
+        <div style="font-size:28px; font-weight:800; color:var(--green2);">${minutes>59?formatLiveCountdown(totalSeconds):`${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`}</div>
         <div style="margin-top:8px; color:var(--grey);">${next.label}</div>
         <div style="margin-top:4px; font-size:13px; color:var(--white);">${next.time ? 'Start om ' + next.time : ''}</div>
-        <div style="margin-top:6px; font-size:12px; color:var(--grey);">${next.details}</div>`;
+        <div style="margin-top:6px; font-size:12px; color:var(--grey);">${next.details}</div>
+        <div class="btnstack" style="margin-top:14px;">
+          <button class="icobtn back" title="Laatste live-item terughalen" onclick="undoLiveSkip()">↩</button>
+          <button class="icobtn skip" title="Volgend item overslaan" onclick="skipNextLiveBlock()">✕</button>
+        </div>`;
     } else {
       nextTarget.innerHTML = '<div style="color:var(--grey);">'+next.details+'</div>';
     }
@@ -1376,21 +1829,20 @@ function renderLiveInfoPage(){
       const now = new Date();
       timeTarget.textContent = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       if(hourCountdownTarget){
-        const target = new Date(now);
-        target.setMinutes(59,41,0);
-        if(target <= now) target.setHours(target.getHours()+1,59,41,0);
-        const remaining=Math.max(0,Math.floor((target-now)/1000));
-        const minutes=Math.floor(remaining/60);
-        const seconds=remaining%60;
-        hourCountdownTarget.textContent=`Einde uur: ${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+        const elapsed=Math.min(now.getMinutes()*60+now.getSeconds(),59*60+41);
+        const minutes=Math.floor(elapsed/60);
+        const seconds=elapsed%60;
+        hourCountdownTarget.textContent=`Uurverloop: ${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
       }
     };
     updateClock();
-    setInterval(updateClock, 1000);
+    if(window._liveClockTimer) clearInterval(window._liveClockTimer);
+    window._liveClockTimer=setInterval(updateClock, 1000);
   }
 
   updateCountdown();
-  setInterval(updateCountdown, 1000);
+  if(window._liveCountdownTimer) clearInterval(window._liveCountdownTimer);
+  window._liveCountdownTimer=setInterval(updateCountdown, 1000);
 
   if (newsTarget) {
     loadRegionNews().then(items => {
@@ -1719,8 +2171,26 @@ function removeAgendaRow(day,index){if(!requireAdmin()) return; agendaData[day].
 function addAgendaRow(day){if(!requireAdmin()) return; agendaData[day].push({time:'22:00',artist:''}); save('km_agenda',agendaData); renderAgenda();}
 
 /* ---------- init ---------- */
+applyTheme(load('km_theme','dark'),false);
+setInterval(checkGuestReadyNotification,5000);
+document.querySelectorAll('#page-editor input, #page-editor textarea, #page-editor select').forEach(field=>{
+  field.addEventListener('input',queueCurrentDraftSave);
+  field.addEventListener('change',queueCurrentDraftSave);
+});
+window.addEventListener('beforeunload',saveCurrentDraft);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveCurrentDraft();});
+const hasActiveSession=isAdminLoggedIn();
+if(hasActiveSession){
+  setLoggedInUser(currentUser(), currentUserRole());
+  document.getElementById('loginShell').classList.add('hidden');
+  document.getElementById('appShell').classList.remove('hidden');
+}
 setInterval(updateDashboardClock, 1000);
-renderDashboard();
+hydrateSharedState().finally(() => {
+  applyTheme(load('km_theme','dark'),false);
+  checkGuestReadyNotification();
+  renderDashboard();
+});
 </script>
 </body>
 </html>
