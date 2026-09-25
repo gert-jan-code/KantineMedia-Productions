@@ -504,7 +504,7 @@ body.presenter-mode .pagehead h1{font-size:30px;}
   <!-- BACKINGTRACKS -->
   <section class="page" id="page-backingtracks">
     <div class="pagehead">
-      <div><h1>Backingtracks</h1><p>Upload backingtracks zodat ze vanaf ieder apparaat kunnen worden gedownload.</p></div>
+      <div><h1>Backingtracks</h1><p>Upload backingtracks en download ze later terug in deze browser.</p></div>
     </div>
     <div class="card" style="margin-bottom:16px;">
       <h3>Nieuwe backingtrack</h3>
@@ -512,7 +512,7 @@ body.presenter-mode .pagehead h1{font-size:30px;}
         <div class="field"><label for="backingtrackFile">Audiobestand</label><input id="backingtrackFile" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac,.aac"></div>
         <button class="btn" type="button" onclick="uploadBackingtrack()">⬆ Uploaden</button>
       </div>
-      <p style="color:var(--grey); font-size:12px; margin-top:10px;">Maximaal 100 MB per bestand.</p>
+      <p style="color:var(--grey); font-size:12px; margin-top:10px;">Maximaal 100 MB per bestand. Backingtracks worden lokaal in deze browser opgeslagen (niet gedeeld met andere apparaten of bezoekers) — dit werkt overal, ook op GitHub Pages.</p>
     </div>
     <div class="card">
       <div class="music-search"><input id="backingtrackSearch" placeholder="🔎 Zoek backingtrack..." oninput="renderBackingtracks()"></div>
@@ -797,7 +797,6 @@ body.presenter-mode .pagehead h1{font-size:30px;}
 
 /* ---------- helpers (niet aanpassen) ---------- */
 const SHARED_STATE_URL = location.protocol === 'http:' && !location.hostname.endsWith('github.io') ? '/api/state' : '';
-const BACKINGTRACKS_API_URL = location.protocol === 'http:' && !location.hostname.endsWith('github.io') ? '/api/backingtracks' : '';
 function toast(msg){const t=document.getElementById('toast'); t.innerHTML='✓ '+msg; t.classList.add('show'); clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),2200);}
 async function hydrateSharedState(){
   if (!SHARED_STATE_URL) return;
@@ -843,6 +842,51 @@ function save(key,val){
   }
 }
 function uid(){return 'id'+Math.random().toString(36).slice(2,10);}
+
+/* ---------- backingtracks opslag (IndexedDB — werkt overal, ook op GitHub Pages) ---------- */
+const BACKINGTRACKS_DB_NAME='km_backingtracks_db';
+const BACKINGTRACKS_STORE='tracks';
+function openBackingtracksDB(){
+  return new Promise((resolve,reject)=>{
+    if(!('indexedDB' in window)){ reject(new Error('IndexedDB niet ondersteund')); return; }
+    const request=indexedDB.open(BACKINGTRACKS_DB_NAME,1);
+    request.onupgradeneeded=()=>{
+      const db=request.result;
+      if(!db.objectStoreNames.contains(BACKINGTRACKS_STORE)){
+        db.createObjectStore(BACKINGTRACKS_STORE,{keyPath:'id'});
+      }
+    };
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error);
+  });
+}
+async function backingtracksDBAll(){
+  const db=await openBackingtracksDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(BACKINGTRACKS_STORE,'readonly');
+    const request=tx.objectStore(BACKINGTRACKS_STORE).getAll();
+    request.onsuccess=()=>resolve(request.result||[]);
+    request.onerror=()=>reject(request.error);
+  });
+}
+async function backingtracksDBPut(record){
+  const db=await openBackingtracksDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(BACKINGTRACKS_STORE,'readwrite');
+    tx.objectStore(BACKINGTRACKS_STORE).put(record);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+async function backingtracksDBDelete(id){
+  const db=await openBackingtracksDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(BACKINGTRACKS_STORE,'readwrite');
+    tx.objectStore(BACKINGTRACKS_STORE).delete(id);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
 
 const NAV = [
   {id:'dashboard', ic:'🏠', label:'Dashboard'},
@@ -1584,6 +1628,7 @@ async function renderLibTracks(){
     </div>`).join('') || '<div class="empty">Geen resultaten.</div>';
 }
 
+/* ---------- backingtracks UI (IndexedDB) ---------- */
 function escapeBackingtrackText(value){
   return String(value||'').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 }
@@ -1598,33 +1643,23 @@ function formatBackingtrackDate(value){
 async function renderBackingtracks(){
   const target=document.getElementById('backingtrackList');
   if(!target)return;
-  if(!BACKINGTRACKS_API_URL){
-    target.innerHTML='<div class="empty">Backingtracks zijn beschikbaar wanneer de website via server.js of server.py draait.</div>';
+  if(!('indexedDB' in window)){
+    target.innerHTML='<div class="empty">Deze browser ondersteunt geen lokale opslag voor backingtracks.</div>';
     return;
   }
   target.innerHTML='<div class="empty">Backingtracks laden...</div>';
   try{
-    const response=await fetch(BACKINGTRACKS_API_URL,{cache:'no-store'});
-    const tracks=await response.json();
-    if(!response.ok) throw new Error(tracks.error||'Laden mislukt');
+    const tracks=(await backingtracksDBAll()).sort((a,b)=>new Date(b.uploadedAt)-new Date(a.uploadedAt));
     const query=(document.getElementById('backingtrackSearch')?.value||'').trim().toLowerCase();
     const filtered=tracks.filter(track=>!query||track.name.toLowerCase().includes(query));
     target.innerHTML=filtered.map(track=>`
       <div class="backingtrack-row">
         <div class="backingtrack-meta"><strong>${escapeBackingtrackText(track.name)}</strong><span>${formatBackingtrackSize(track.size)} · ${formatBackingtrackDate(track.uploadedAt)}</span></div>
-        <div class="backingtrack-actions"><a class="btn small" href="${BACKINGTRACKS_API_URL}/${encodeURIComponent(track.id)}" download>⬇ Download</a>${isAdminLoggedIn()?`<button class="btn danger small" type="button" onclick="deleteBackingtrack('${escapeBackingtrackText(track.id)}')">🗑 Verwijder</button>`:''}</div>
-      </div>`).join('')||'<div class="empty">Geen backingtracks gevonden.</div>';
+        <div class="backingtrack-actions"><button class="btn small" type="button" onclick="downloadBackingtrack('${track.id}')">⬇ Download</button>${isAdminLoggedIn()?`<button class="btn danger small" type="button" onclick="deleteBackingtrack('${track.id}')">🗑 Verwijder</button>`:''}</div>
+      </div>`).join('')||'<div class="empty">Nog geen backingtracks. Upload er één hierboven.</div>';
   }catch(error){
-    target.innerHTML=`<div class="empty">Backingtracks konden niet worden geladen: ${escapeBackingtrackText(error.message)}</div>`;
+    target.innerHTML=`<div class="empty">Backingtracks konden niet worden geladen: ${escapeBackingtrackText(error.message||String(error))}</div>`;
   }
-}
-function bytesToBase64(bytes){
-  let binary='';
-  const chunkSize=0x8000;
-  for(let index=0;index<bytes.length;index+=chunkSize){
-    binary+=String.fromCharCode(...bytes.subarray(index,index+chunkSize));
-  }
-  return btoa(binary);
 }
 async function uploadBackingtrack(){
   if(!requireAdmin())return;
@@ -1632,28 +1667,36 @@ async function uploadBackingtrack(){
   const file=input?.files?.[0];
   if(!file){toast('Kies eerst een audiobestand'); return;}
   if(file.size>100*1024*1024){toast('Het bestand mag maximaal 100 MB zijn'); return;}
-  if(!BACKINGTRACKS_API_URL){toast('De upload-API is niet beschikbaar'); return;}
+  if(!('indexedDB' in window)){toast('Deze browser ondersteunt geen lokale opslag'); return;}
   const button=document.querySelector('#page-backingtracks .backingtrack-upload .btn');
   if(button){button.disabled=true; button.textContent='Uploaden...';}
   try{
-    const data=bytesToBase64(new Uint8Array(await file.arrayBuffer()));
-    const response=await fetch(BACKINGTRACKS_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:file.name,type:file.type,data})});
-    const result=await response.json();
-    if(!response.ok) throw new Error(result.error||'Upload mislukt');
+    const record={id:uid(), name:file.name, type:file.type, size:file.size, uploadedAt:new Date().toISOString(), blob:file};
+    await backingtracksDBPut(record);
     input.value='';
-    toast('Backingtrack geüpload');
+    toast('Backingtrack opgeslagen in deze browser');
     renderBackingtracks();
-  }catch(error){toast(error.message||'Upload mislukt');}
+  }catch(error){toast('Opslaan mislukt: '+(error.message||String(error)));}
   finally{if(button){button.disabled=false; button.textContent='⬆ Uploaden';}}
+}
+async function downloadBackingtrack(id){
+  try{
+    const tracks=await backingtracksDBAll();
+    const track=tracks.find(t=>t.id===id);
+    if(!track){toast('Backingtrack niet gevonden'); return;}
+    const url=URL.createObjectURL(track.blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=track.name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+  }catch(error){toast('Download mislukt');}
 }
 async function deleteBackingtrack(id){
   if(!requireAdmin()||!confirm('Deze backingtrack verwijderen?'))return;
   try{
-    const response=await fetch(`${BACKINGTRACKS_API_URL}/${encodeURIComponent(id)}`,{method:'DELETE'});
-    if(!response.ok) throw new Error('Verwijderen mislukt');
+    await backingtracksDBDelete(id);
     renderBackingtracks();
     toast('Backingtrack verwijderd');
-  }catch(error){toast(error.message||'Verwijderen mislukt');}
+  }catch(error){toast('Verwijderen mislukt');}
 }
 
 /* ---------- LIVE INFO PAGE ---------- */
